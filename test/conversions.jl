@@ -1,17 +1,3 @@
-function randdegree(rng, Ns...)
-    points = rand(rng, Ns...)
-    return points .* 360
-end
-
-function randrad(rng, Ns...)
-    points = rand(rng, Ns...)
-    return points .* 2π
-end
-
-function randha(rng, Ns...)
-    points = rand(rng, Ns...)
-    return points .* 24
-end
 
 function test_integration(f1, f2, angles)
     reconstructed = @. f2(f1(angles))
