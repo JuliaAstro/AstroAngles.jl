@@ -23,6 +23,59 @@ pkg> add AstroAngles#main
 
 ## Usage
 
+### Angle Parsing Utilities
+
+String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:sec" format can be parsed using a variety of delimiters, which can be mixed together (e.g. can use `°` after degrees but `:` after the arcminutes)
+
+#### dms formats
+
+```
+"xx:xx:xx.x"
+"xx xx xx.x"
+"xxdxxmxx.xs"
+"xx°xx'xx.x\""
+"xx°xx′xx.x″"
+```
+
+#### hms formats
+
+```
+"xx:xx:xx.x"
+"xx xx xx.x"
+"xxhxxmxx.xs"
+"xxhxx'xx.x\""
+"xxhxx′xx.x″"
+```
+
+the simplest way to convert is to use the `@dms_str` and `@rms_str` macros, which allows you to choose the output angle type
+
+```julia
+julia> dms"12:17:25.3"
+0.21450726764795752
+
+julia> dms"12:17:25.3"rad # default
+0.21450726764795752
+
+julia> dms"12:17:25.3"deg
+12.29036111111111
+
+julia> dms"12:17:25.3"ha
+0.8193574074074074
+```
+
+for more control on the output, you can use the `parse_dms` and `parse_hms` methods, which returns a tuple of the parsed `dms` or `hms` values
+
+```julia
+parse_dms # string -> (deg, arcmin, arcsec)
+parse_hms # string -> (hours, mins, secs)
+```
+
+```julia
+julia> parse_dms("12:17:25.3")
+(12.0, 17.0, 25.3)
+```
+
+
 ### Angle Conversion Utilities
 
 The following methods are added for converting to and from hour angles

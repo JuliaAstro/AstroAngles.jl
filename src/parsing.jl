@@ -11,9 +11,9 @@ Parses a string input in "deg:arcmin:arcsec" format to the tuple `(degrees, arcm
 ```
 """
 function parse_dms(input)
-    m = match(dms_re, input)
+    m = match(dms_re, strip(input))
     m === nothing && error("Could not parse $input to sexagesimal")
-    return map(c -> parse(Float64, c), m.captures)
+    return map(c -> parse(Float64, c), Tuple(m.captures))
 end
 
 """
@@ -25,9 +25,9 @@ Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seco
 ```
 """
 function parse_hms(input)
-    m = match(hms_re, input)
+    m = match(hms_re, strip(input))
     m === nothing && error("Could not parse $input to hour angles")
-    return map(c -> parse(Float64, c), m.captures)
+    return map(c -> parse(Float64, c), Tuple(m.captures))
 end
 
 """
@@ -68,11 +68,11 @@ See also: [`parse_hms`](@ref)
 macro hms_str(input, flag="rad")
     hms = parse_hms(input)
     if flag === "rad"
-        return hms2rad(dms)
+        return hms2rad(hms)
     elseif flag === "deg"
-        return hms2deg(dms)
+        return hms2deg(hms)
     elseif flag === "ha"
-        return hms2ha(dms)
+        return hms2ha(hms)
     else
         error("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
     end

@@ -18,8 +18,8 @@ export deg2dms,
        dms2ha,
        parse_dms,
        parse_hms,
-       dms_str,
-       hms_str
+       @dms_str,
+       @hms_str
 
 include("conversions.jl")
 include("parsing.jl")
