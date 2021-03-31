@@ -2,6 +2,8 @@
 ## Angle Conversions
 ##
 
+const MINUTES_TO_WHOLE = inv(60)
+const SECONDS_TO_WHOLE = inv(3600)
 const HOURS_PER_DEGREE = 24 / 360
 const HOURS_PER_RADIAN = 24 / 2π
 const DEGREES_PER_HOUR = 360 / 24
@@ -104,7 +106,7 @@ ha2dms(angle) = ha2deg(angle) |> deg2dms
 
 Convert (degrees, arcminutes, arcseconds) tuple to degrees
 """
-dms2deg(degrees, arcminutes, arcseconds) = degrees + arcminutes / 60 + arcseconds / 3600
+dms2deg(degrees, arcminutes, arcseconds) = degrees + arcminutes * MINUTES_TO_WHOLE + arcseconds * SECONDS_TO_WHOLE
 
 """
     dms2rad(degrees, arcmin, arcsec)
@@ -130,7 +132,7 @@ dms2ha(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcsecond
 
 Convert (hours, minutes, seconds) tuple to hour angles
 """
-hms2ha(hours, minutes, seconds) = hours + minutes / 60 + seconds / 3600
+hms2ha(hours, minutes, seconds) = hours + minutes * MINUTES_TO_WHOLE + seconds * SECONDS_TO_WHOLE
 
 """
     hms2deg(hours, mins, secs)
