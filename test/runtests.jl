@@ -1,6 +1,7 @@
 using AstroAngles
+using StableRNGs
 using Test
 
-@testset "AstroAngles.jl" begin
-    # Write your tests here.
-end
+rng = StableRNG(206265)
+
+@testset "conversions" begin include("conversions.jl") end

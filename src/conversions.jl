@@ -104,7 +104,7 @@ ha2dms(angle) = ha2deg(angle) |> deg2dms
 
 Convert (degrees, arcminutes, arcseconds) tuple to degrees
 """
-dms2deg(degrees, arcminutes, arcseconds) = degrees + arcminutes * 60 + arcseconds * 3600
+dms2deg(degrees, arcminutes, arcseconds) = degrees + arcminutes / 60 + arcseconds / 3600
 
 """
     dms2rad(degrees, arcmin, arcsec)
@@ -130,7 +130,7 @@ dms2ha(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcsecond
 
 Convert (hours, minutes, seconds) tuple to hour angles
 """
-hms2ha(hours, minutes, seconds) = hours + minutes * 60 + seconds * 3600
+hms2ha(hours, minutes, seconds) = hours + minutes / 60 + seconds / 3600
 
 """
     hms2deg(hours, mins, secs)
