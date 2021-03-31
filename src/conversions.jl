@@ -5,9 +5,9 @@
 const MINUTES_TO_WHOLE = inv(60)
 const SECONDS_TO_WHOLE = inv(3600)
 const HOURS_PER_DEGREE = 24 / 360
-const HOURS_PER_RADIAN = 24 / 2π
+const HOURS_PER_RADIAN = 12 / π
 const DEGREES_PER_HOUR = 360 / 24
-const RADIANS_PER_HOUR = 2π / 24
+const RADIANS_PER_HOUR = π / 12
 
 
 ### rad2XXX

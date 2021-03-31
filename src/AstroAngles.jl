@@ -15,8 +15,13 @@ export deg2dms,
        hms2rad,
        dms2deg,
        dms2rad,
-       dms2ha
+       dms2ha,
+       parse_dms,
+       parse_hms,
+       dms_str,
+       hms_str
 
 include("conversions.jl")
+include("parsing.jl")
 
 end
