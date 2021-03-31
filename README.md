@@ -47,7 +47,7 @@ String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:s
 "xxhxx′xx.x″"
 ```
 
-the simplest way to convert is to use the `@dms_str` and `@rms_str` macros, which allows you to choose the output angle type
+the simplest way to convert is to use the `@dms_str` and `@hms_str` macros, which allows you to choose the output angle type
 
 ```julia
 julia> dms"12:17:25.3"
