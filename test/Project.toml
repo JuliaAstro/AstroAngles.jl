@@ -1,7 +1,8 @@
 [deps]
-Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Formatting = "59287772-0a20-5a39-b81b-1366585eb4c0"
 StableRNGs = "860ef19b-820b-49d6-a774-d7a799459cd3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+Formatting = "0.4"
 StableRNGs = "1"

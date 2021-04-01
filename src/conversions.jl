@@ -49,7 +49,7 @@ Convert degrees to (degrees, arcminutes, arcseconds) tuple
 """
 function deg2dms(angle)
     remain_degrees, degrees = modf(angle)
-    fraction_arcmin = remain_degrees * 60
+    fraction_arcmin = abs(remain_degrees) * 60
     remain_arcmin, arcmin = modf(fraction_arcmin)
     arcsec = remain_arcmin * 60
     return degrees, arcmin, arcsec
@@ -85,7 +85,7 @@ Convert hour angles to (hours, minutes, seconds) tuple
 """
 function ha2hms(angle)
     remain_hours, hours = modf(angle)
-    fraction_min = remain_hours * 60
+    fraction_min = abs(remain_hours) * 60
     remain_min, minutes = modf(fraction_min)
     seconds = remain_min * 60
     return hours, minutes, seconds
@@ -106,7 +106,10 @@ ha2dms(angle) = ha2deg(angle) |> deg2dms
 
 Convert (degrees, arcminutes, arcseconds) tuple to degrees
 """
-dms2deg(degrees, arcminutes, arcseconds) = degrees + arcminutes * MINUTES_TO_WHOLE + arcseconds * SECONDS_TO_WHOLE
+function dms2deg(degrees, arcminutes, arcseconds)
+    frac = arcminutes * MINUTES_TO_WHOLE + arcseconds * SECONDS_TO_WHOLE
+    return signbit(degrees) ? degrees - frac : degrees + frac
+end
 
 """
     dms2rad(degrees, arcmin, arcsec)
@@ -132,7 +135,10 @@ dms2ha(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcsecond
 
 Convert (hours, minutes, seconds) tuple to hour angles
 """
-hms2ha(hours, minutes, seconds) = hours + minutes * MINUTES_TO_WHOLE + seconds * SECONDS_TO_WHOLE
+function hms2ha(hours, minutes, seconds)
+    frac = minutes * MINUTES_TO_WHOLE + seconds * SECONDS_TO_WHOLE
+    return signbit(hours) ? hours - frac : hours + frac
+end
 
 """
     hms2deg(hours, mins, secs)

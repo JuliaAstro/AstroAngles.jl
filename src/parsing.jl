@@ -1,18 +1,18 @@
 
-const dms_re = r"([+-]?\d+\.?\d*)[°d:\s](\d+\.?\d*)['′m:\s](\d+\.?\d*)[\"″s]?"
-const hms_re = r"([+-]?\d+\.?\d*)[h:\s](\d+\.?\d*)['′m:\s](\d+\.?\d*)[\"″s]?"
+const dms_re = r"([+-]?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
+const hms_re = r"([+-]?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
 
 """
     parse_dms(input)
 
 Parses a string input in "deg:arcmin:arcsec" format to the vector `(degrees, arcminutes, arcseconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
 ```
-"xx[°d: ]xx['′m: ]xx[\\\"″s]"
+"[+-]xx[°d: ]xx['m: ]xx[\\\"s]"
 ```
 """
 function parse_dms(input)
     m = match(dms_re, strip(input))
-    m === nothing && error("Could not parse $input to sexagesimal")
+    m === nothing && error("Could not parse \"$input\" to sexagesimal")
     return map(c -> parse(Float64, c), m.captures)
 end
 
@@ -21,12 +21,12 @@ end
 
 Parses a string input in "ha:min:sec" format to the vector `(hours, minutes, seconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
 ```
-"xx[h ]xx['′m: ]xx[\\\"″s]"
+"[+-]xx[h ]xx['m: ]xx[\\\"s]"
 ```
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
-    m === nothing && error("Could not parse $input to hour angles")
+    m === nothing && error("Could not parse \"$input\" to hour angles")
     return map(c -> parse(Float64, c), m.captures)
 end
 
