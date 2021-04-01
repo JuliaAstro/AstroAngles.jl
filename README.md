@@ -63,11 +63,11 @@ julia> dms"12:17:25.3"ha
 0.8193574074074074
 ```
 
-for more control on the output, you can use the `parse_dms` and `parse_hms` methods, which returns a tuple of the parsed `dms` or `hms` values
+for more control on the output, you can use the `parse_dms` and `parse_hms` methods, which returns a vecotr of the parsed `dms` or `hms` values
 
 ```julia
-parse_dms # string -> (deg, arcmin, arcsec)
-parse_hms # string -> (hours, mins, secs)
+parse_dms # string -> [deg, arcmin, arcsec]
+parse_hms # string -> [hours, mins, secs]
 ```
 
 ```julia
