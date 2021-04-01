@@ -64,13 +64,12 @@ julia> dms"12:17:25.3"ha
 [`parse_dms`](@ref)
 """
 macro dms_str(input, flag="rad")
-    dms = parse_dms(input)
     if flag === "rad"
-        return dms2rad(dms)
+        return dms2rad(input)
     elseif flag === "deg"
-        return dms2deg(dms)
+        return dms2deg(input)
     elseif flag === "ha"
-        return dms2ha(dms)
+        return dms2ha(input)
     else
         err = ArgumentError("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
         return :(throw($err))
@@ -105,13 +104,12 @@ julia> hms"12:17:25.3"ha
 [`parse_hms`](@ref)
 """
 macro hms_str(input, flag="rad")
-    hms = parse_hms(input)
     if flag === "rad"
-        return hms2rad(hms)
+        return hms2rad(input)
     elseif flag === "deg"
-        return hms2deg(hms)
+        return hms2deg(input)
     elseif flag === "ha"
-        return hms2ha(hms)
+        return hms2ha(input)
     else
         err = ArgumentError("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
         return :(throw($err))
