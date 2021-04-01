@@ -49,14 +49,14 @@ macro tmt(typ,expr)
 @testset "macros" begin
     str = "12:37:34.2344"
     dms = parse_dms(str)
-    @test dms == [12, 37, 34.2344]
+    @test all(dms .== [12, 37, 34.2344])
     @test dms"12:37:34.2344" == dms"12:37:34.2344"rad ≈ dms2rad(dms)
     @test dms"12:37:34.2344"deg ≈ dms2deg(dms)
     @test dms"12:37:34.2344"ha ≈ dms2ha(dms)
     @tmt ErrorException @dms_str("12:37:34.2344", "invalid")
 
     hms = parse_hms(str)
-    @test hms == [12, 37, 34.2344]
+    @test all(hms .== [12, 37, 34.2344])
     @test hms"12:37:34.2344" == hms"12:37:34.2344"rad ≈ hms2rad(hms)
     @test hms"12:37:34.2344"deg ≈ hms2deg(hms)
     @test hms"12:37:34.2344"ha ≈ hms2ha(hms)

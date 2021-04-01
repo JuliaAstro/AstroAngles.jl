@@ -61,26 +61,52 @@ julia> dms"12:17:25.3"ha
 0.8193574074074074
 ```
 
-for more control on the output, you can use the `parse_dms` and `parse_hms` methods, which returns a vecotr of the parsed `dms` or `hms` values
+for more control on the output, you can use the `parse_dms` and `parse_hms` methods, which returns a tuple of the parsed `dms` or `hms` values
 
 ```julia
-parse_dms # string -> [deg, arcmin, arcsec]
-parse_hms # string -> [hours, mins, secs]
+parse_dms # string -> (deg, arcmin, arcsec)
+parse_hms # string -> (hours, mins, secs)
 ```
 
 ```julia
 julia> parse_dms("12:17:25.3")
-3-element Vector{Float64}:
- 12.0
- 17.0
- 25.3
+(12.0, 17.0, 25.3)
 
-julia> parse_dms("-4:4:6")
-3-element Vector{Float64}:
- -4.0
-  4.0
-  6.0
+julia> parse_hms("-4:4:6")
+(-4.0, 4.0, 6.0)
 ```
+
+#### Example: reading coordinates from a table
+
+Here's an example of reading sky coordinates from a CSV formatted target list and converting them to degrees-
+
+```julia
+julia> using AstroAngles, CSV, DataFrames
+
+julia> table = CSV.File("target_list.csv") |> DataFrame;
+
+julia> [table.ra table.dec]
+203×2 Matrix{String}:
+ "00 05 01.42"  "40 03 35.82"
+ "00 05 07.52"  "73 13 11.34"
+ "00 36 01.40"  "-11 12 13.00"
+[...]
+
+julia> ra_d = @. parse_hms(table.ra) |> hms2deg
+203-element Vector{Float64}:
+   1.2559166666666666
+   1.2813333333333332
+   9.005833333333333
+[...]
+
+julia> dec_d = @. parse_dms(table.dec) |> dms2deg
+203-element Vector{Float64}:
+  40.05995
+  73.21981666666667
+ -11.203611111111112
+[...]
+```
+
 
 ### Angle Conversion Utilities
 
@@ -119,7 +145,7 @@ hms2ha  # (hours, mins, secs) -> hour angles
 
 ### Formatting angles
 
-Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Formatting.jl](https://github.com/JuliaIO/Formatting.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or tuple/vector of 3 delimiters for each value).
+Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Formatting.jl](https://github.com/JuliaIO/Formatting.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
 
 ```julia
 julia> format_angle(deg2dms(45.0))
