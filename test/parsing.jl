@@ -23,7 +23,7 @@ end
     @test dms"12:37:34.2344"ha ≈ dms2ha(dms)
 
     hms = parse_hms(str)
-    @test hms"12:37:34.2344" == hms"12:37:34.2344"rad ≈ hms2rad(dms)
-    @test hms"12:37:34.2344"deg ≈ hms2deg(dms)
-    @test hms"12:37:34.2344"ha ≈ hms2ha(dms)
+    @test hms"12:37:34.2344" == hms"12:37:34.2344"rad ≈ hms2rad(hms)
+    @test hms"12:37:34.2344"deg ≈ hms2deg(hms)
+    @test hms"12:37:34.2344"ha ≈ hms2ha(hms)
 end
