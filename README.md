@@ -76,38 +76,6 @@ julia> parse_hms("-4:4:6")
 (-4.0, 4.0, 6.0)
 ```
 
-#### Example: reading coordinates from a table
-
-Here's an example of reading sky coordinates from a CSV formatted target list and converting them to degrees-
-
-```julia
-julia> using AstroAngles, CSV, DataFrames
-
-julia> table = CSV.File("target_list.csv") |> DataFrame;
-
-julia> [table.ra table.dec]
-203×2 Matrix{String}:
- "00 05 01.42"  "40 03 35.82"
- "00 05 07.52"  "73 13 11.34"
- "00 36 01.40"  "-11 12 13.00"
-[...]
-
-julia> ra_d = @. parse_hms(table.ra) |> hms2deg
-203-element Vector{Float64}:
-   1.2559166666666666
-   1.2813333333333332
-   9.005833333333333
-[...]
-
-julia> dec_d = @. parse_dms(table.dec) |> dms2deg
-203-element Vector{Float64}:
-  40.05995
-  73.21981666666667
- -11.203611111111112
-[...]
-```
-
-
 ### Angle Conversion Utilities
 
 The following methods are added for converting to and from hour angles
@@ -143,6 +111,8 @@ hms2rad # (hours, mins, secs) -> radians
 hms2ha  # (hours, mins, secs) -> hour angles
 ```
 
+the above functions can take a string as input and will automatically parse it (using `parse_dms` or `parse_hms`, respectively) before converting.
+
 ### Formatting angles
 
 Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Formatting.jl](https://github.com/JuliaIO/Formatting.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
@@ -154,6 +124,38 @@ julia> format_angle(deg2dms(45.0))
 julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
 "-4h19m59.999999999998934s"
 ```
+
+### Example: reading coordinates from a table
+
+Here's an example of reading sky coordinates from a CSV formatted target list and converting them to degrees-
+
+```julia
+julia> using AstroAngles, CSV, DataFrames
+
+julia> table = CSV.File("target_list.csv") |> DataFrame;
+
+julia> [table.ra table.dec]
+203×2 Matrix{String}:
+ "00 05 01.42"  "40 03 35.82"
+ "00 05 07.52"  "73 13 11.34"
+ "00 36 01.40"  "-11 12 13.00"
+[...]
+
+julia> ra_d = @. hms2deg(table.ra)
+203-element Vector{Float64}:
+   1.2559166666666666
+   1.2813333333333332
+   9.005833333333333
+[...]
+
+julia> dec_d = @. dms2deg(table.dec)
+203-element Vector{Float64}:
+  40.05995
+  73.21981666666667
+ -11.203611111111112
+[...]
+```
+
 
 ## Contributing/Support
 

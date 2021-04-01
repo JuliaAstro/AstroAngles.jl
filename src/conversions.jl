@@ -103,8 +103,9 @@ ha2dms(angle) = ha2deg(angle) |> deg2dms
 """
     dms2deg(degrees, arcmin, arcsec)
     dms2deg(parts)
+    dms2deg(input::AbstractString)
 
-Convert (degrees, arcminutes, arcseconds) tuple to degrees
+Convert (degrees, arcminutes, arcseconds) tuple to degrees. If a string is given, will parse with [`parse_dms`](@ref) first. If an angle is input will treat as a no-op.
 """
 function dms2deg(degrees, arcminutes, arcseconds)
     frac = arcminutes * MINUTES_TO_WHOLE + arcseconds * SECONDS_TO_WHOLE
@@ -114,16 +115,18 @@ end
 """
     dms2rad(degrees, arcmin, arcsec)
     dms2rad(parts)
+    dms2rad(input::AbstractString)
 
-Convert (degrees, arcminutes, arcseconds) tuple to radians
+Convert (degrees, arcminutes, arcseconds) tuple to radians. If a string is given, will parse with [`parse_dms`](@ref) first. If an angle is input will treat as a no-op.
 """
 dms2rad(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcseconds) |> deg2rad
 
 """
     dms2ha(degrees, arcmin, arcsec)
     dms2ha(parts)
+    dms2ha(input::AbstractString)
 
-Convert (degrees, arcminutes, arcseconds) tuple to hour angles
+Convert (degrees, arcminutes, arcseconds) tuple to hour angles. If a string is given, will parse with [`parse_dms`](@ref) first. If an angle is input will treat as a no-op.
 """
 dms2ha(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcseconds) |> deg2ha
 
@@ -138,8 +141,9 @@ end
 """
     hms2ha(hours, mins, secs)
     hms2ha(parts)
+    hms2ha(input::AbstractString)
 
-Convert (hours, minutes, seconds) tuple to hour angles
+Convert (hours, minutes, seconds) tuple to hour angles. If a string is given, will parse with [`parse_hms`](@ref) first. If an angle is input will treat as a no-op.
 """
 function hms2ha(hours, minutes, seconds)
     frac = minutes * MINUTES_TO_WHOLE + seconds * SECONDS_TO_WHOLE
@@ -149,16 +153,18 @@ end
 """
     hms2deg(hours, mins, secs)
     hms2deg(parts)
+    hms2deg(input::AbstractString)
 
-Convert (hours, minutes, seconds) tuple to degrees
+Convert (hours, minutes, seconds) tuple to degrees. If a string is given, will parse with [`parse_hms`](@ref) first. If an angle is input will treat as a no-op.
 """
 hms2deg(hours, minutes, seconds) = hms2ha(hours, minutes, seconds) |> ha2deg
 
 """
     hms2rad(hours, mins, secs)
     hms2rad(parts)
+    hms2rad(input::AbstractString)
 
-Convert (hours, minutes, seconds) tuple to radians
+Convert (hours, minutes, seconds) tuple to radians. If a string is given, will parse with [`parse_hms`](@ref) first. If an angle is input will treat as a no-op.
 """
 hms2rad(hours, minutes, seconds) = hms2ha(hours, minutes, seconds) |> ha2rad
 
