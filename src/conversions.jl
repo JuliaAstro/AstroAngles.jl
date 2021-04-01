@@ -127,6 +127,12 @@ Convert (degrees, arcminutes, arcseconds) tuple to hour angles
 """
 dms2ha(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcseconds) |> deg2ha
 
+# code-gen for string inputs and no-ops
+for func in (:dms2deg, :dms2rad, :dms2ha)
+    @eval $func(input::AbstractString) = parse_dms(input) |> $func
+    @eval $func(input::Number) = input
+end
+
 ### hms2xxx
 
 """
@@ -156,6 +162,13 @@ Convert (hours, minutes, seconds) tuple to radians
 """
 hms2rad(hours, minutes, seconds) = hms2ha(hours, minutes, seconds) |> ha2rad
 
+# code-gen for string inputs and no-ops
+for func in (:hms2deg, :hms2rad, :hms2ha)
+    @eval $func(input::AbstractString) = parse_hms(input) |> $func
+    @eval $func(input::Number) = input
+end
+
+# code-gen for accepting inputs separate or in a collection
 for func in (:dms2rad, :dms2deg, :dms2ha, :hms2rad, :hms2deg, :hms2ha)
     @eval $func(parts) = $func(parts...)
 end

@@ -22,14 +22,42 @@ HMS_FSTRINGS = FormatExpr.([
         res = parse_dms(str)
         return all(dms .≈ res)
     end
+
+    @test all(randdms(rng, 1000)) do dms
+        d, m, s = dms
+        str = format(fstring, d, m, s)
+        t1 = dms2rad(str) == parse_dms(str) |> dms2rad
+        t2 = dms2deg(str) == parse_dms(str) |> dms2deg
+        t3 = dms2ha(str) == parse_dms(str) |> dms2ha
+        return t1 && t2 && t3
+    end
+end
+
+@testset "no-ops" begin
+    val = randn(rng)
+    @test dms2rad(val) === val
+    @test dms2deg(val) === val
+    @test dms2ha(val) === val
+    @test hms2rad(val) === val
+    @test hms2deg(val) === val
+    @test hms2ha(val) === val
 end
  
 @testset "parsing" for fstring in HMS_FSTRINGS
-    @test all(randhms(rng, 10)) do hms
+    @test all(randhms(rng, 1000)) do hms
         h, m, s = hms
-        str = format(fstring, h, abs(m), abs(s))
+        str = format(fstring, h, m, s)
         res = parse_hms(str)
         return all(hms .≈ res)
+    end
+
+    @test all(randhms(rng, 1000)) do hms
+        h, m, s = hms
+        str = format(fstring, h, m, s)
+        t1 = hms2rad(str) == parse_hms(str) |> hms2rad
+        t2 = hms2deg(str) == parse_hms(str) |> hms2deg
+        t3 = hms2ha(str) == parse_hms(str) |> hms2ha
+        return t1 && t2 && t3
     end
 end
 # test-macro-throws
