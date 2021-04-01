@@ -84,7 +84,6 @@ julia> parse_dms("-4:4:6")
   6.0
 ```
 
-
 ### Angle Conversion Utilities
 
 The following methods are added for converting to and from hour angles
@@ -118,6 +117,18 @@ dms2ha  # (deg, arcmin, arcsec) -> hour angles
 hms2deg # (hours, mins, secs) -> degrees
 hms2rad # (hours, mins, secs) -> radians
 hms2ha  # (hours, mins, secs) -> hour angles
+```
+
+### Formatting angles
+
+Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Formatting.jl](https://github.com/JuliaIO/Formatting.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or tuple/vector of 3 delimiters for each value).
+
+```julia
+julia> format_angle(deg2dms(45.0))
+"45:0:0.0"
+
+julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
+"-4h19m59.999999999998934s"
 ```
 
 ## Contributing
