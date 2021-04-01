@@ -19,9 +19,11 @@ export deg2dms,
        parse_dms,
        parse_hms,
        @dms_str,
-       @hms_str
+       @hms_str,
+       format_angle
 
 include("conversions.jl")
 include("parsing.jl")
+include("printing.jl")
 
 end

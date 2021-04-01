@@ -29,22 +29,22 @@ String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:s
 
 #### dms formats
 
-```
-"xx:xx:xx.x"
-"xx xx xx.x"
-"xxdxxmxx.xs"
-"xx°xx'xx.x\""
-"xx°xx′xx.x″"
+```julia
+"[+-]xx:xx:xx.x"
+"[+-]xx xx xx.x"
+"[+-]xxdxxmxx.xs"
+"[+-]xx°xx'xx.x\""
+"[+-]xx°xx′xx.x″"
 ```
 
 #### hms formats
 
-```
-"xx:xx:xx.x"
-"xx xx xx.x"
-"xxhxxmxx.xs"
-"xxhxx'xx.x\""
-"xxhxx′xx.x″"
+```julia
+"[+-]xx:xx:xx.x"
+"[+-]xx xx xx.x"
+"[+-]xxhxxmxx.xs"
+"[+-]xxhxx'xx.x\""
+"[+-]xxhxx′xx.x″"
 ```
 
 the simplest way to convert is to use the `@dms_str` and `@hms_str` macros, which allows you to choose the output angle type

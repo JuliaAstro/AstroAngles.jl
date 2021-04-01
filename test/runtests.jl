@@ -13,3 +13,4 @@ randhms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2hms
 
 @testset "conversions" begin include("conversions.jl") end
 @testset "parsing" begin include("parsing.jl") end
+@testset "printing" begin include("printing.jl") end
