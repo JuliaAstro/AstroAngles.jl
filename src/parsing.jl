@@ -66,7 +66,8 @@ macro dms_str(input, flag="rad")
     elseif flag === "ha"
         return dms2ha(dms)
     else
-        error("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
+        err = ArgumentError("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
+        return :(throw($err))
     end
 end
 
@@ -106,6 +107,7 @@ macro hms_str(input, flag="rad")
     elseif flag === "ha"
         return hms2ha(hms)
     else
-        error("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
+        err = ArgumentError("angle type $flag not recognized. Choose between `deg`, `rad`, or `ha`")
+        return :(throw($err))
     end
 end
