@@ -72,7 +72,16 @@ parse_hms # string -> (hours, mins, secs)
 
 ```julia
 julia> parse_dms("12:17:25.3")
-(12.0, 17.0, 25.3)
+3-element Vector{Float64}:
+ 12.0
+ 17.0
+ 25.3
+
+julia> parse_dms("-4:4:6")
+3-element Vector{Float64}:
+ -4.0
+  4.0
+  6.0
 ```
 
 
