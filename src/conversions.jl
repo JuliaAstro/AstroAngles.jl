@@ -10,7 +10,7 @@ const DEGREES_PER_HOUR = 360 / 24
 const RADIANS_PER_HOUR = π / 12
 
 
-### rad2XXX
+### rad2xxx
 
 """
     rad2ha(angle)
@@ -33,7 +33,7 @@ Convert radians to (hours, minutes, seconds) tuple
 """
 rad2hms(angle) = rad2ha(angle) |> ha2hms
 
-### deg2XXX
+### deg2xxx
 
 """
     deg2ha(angle)
@@ -62,7 +62,7 @@ Convert degrees to (hours, minutes, seconds) tuple
 """
 deg2hms(angle) = deg2ha(angle) |> ha2hms
 
-### ha2XXX
+### ha2xxx
 
 """
     ha2rad(angle)
@@ -98,11 +98,11 @@ Convert hour angles to (degrees, arcminutes, arcseconds) tuple
 """
 ha2dms(angle) = ha2deg(angle) |> deg2dms
 
-### dms2XXX
+### dms2xxx
 
 """
     dms2deg(degrees, arcmin, arcsec)
-    dms2deg(tuple)
+    dms2deg(parts)
 
 Convert (degrees, arcminutes, arcseconds) tuple to degrees
 """
@@ -113,7 +113,7 @@ end
 
 """
     dms2rad(degrees, arcmin, arcsec)
-    dms2rad(tuple)
+    dms2rad(parts)
 
 Convert (degrees, arcminutes, arcseconds) tuple to radians
 """
@@ -121,17 +121,17 @@ dms2rad(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcsecon
 
 """
     dms2ha(degrees, arcmin, arcsec)
-    dms2ha(tuple)
+    dms2ha(parts)
 
 Convert (degrees, arcminutes, arcseconds) tuple to hour angles
 """
 dms2ha(degrees, arcminutes, arcseconds) = dms2deg(degrees, arcminutes, arcseconds) |> deg2ha
 
-### hms2XXX
+### hms2xxx
 
 """
     hms2ha(hours, mins, secs)
-    hms2ha(tuple)
+    hms2ha(parts)
 
 Convert (hours, minutes, seconds) tuple to hour angles
 """
@@ -142,7 +142,7 @@ end
 
 """
     hms2deg(hours, mins, secs)
-    hms2deg(tuple)
+    hms2deg(parts)
 
 Convert (hours, minutes, seconds) tuple to degrees
 """
@@ -150,12 +150,12 @@ hms2deg(hours, minutes, seconds) = hms2ha(hours, minutes, seconds) |> ha2deg
 
 """
     hms2rad(hours, mins, secs)
-    hms2rad(tuple)
+    hms2rad(parts)
 
 Convert (hours, minutes, seconds) tuple to radians
 """
 hms2rad(hours, minutes, seconds) = hms2ha(hours, minutes, seconds) |> ha2rad
 
 for func in (:dms2rad, :dms2deg, :dms2ha, :hms2rad, :hms2deg, :hms2ha)
-    @eval $func(args) = $func(args...)
+    @eval $func(parts) = $func(parts...)
 end

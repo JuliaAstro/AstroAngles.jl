@@ -34,7 +34,6 @@ String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:s
 "[+-]xx xx xx.x"
 "[+-]xxdxxmxx.xs"
 "[+-]xx°xx'xx.x\""
-"[+-]xx°xx′xx.x″"
 ```
 
 #### hms formats
@@ -44,7 +43,6 @@ String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:s
 "[+-]xx xx xx.x"
 "[+-]xxhxxmxx.xs"
 "[+-]xxhxx'xx.x\""
-"[+-]xxhxx′xx.x″"
 ```
 
 the simplest way to convert is to use the `@dms_str` and `@hms_str` macros, which allows you to choose the output angle type
@@ -131,6 +129,10 @@ julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
 "-4h19m59.999999999998934s"
 ```
 
-## Contributing
+## Contributing/Support
+
+To contribute, feel free to open a [pull request](https://github.com/JuliaAstro/AstroAngles.jl/pulls). If you run into problems, please open an [issue](https://github.com/JuliaAstro/AstroAngles.jl/issues). To discuss ideas, usage, or to plan contributions, open a new [discussion](https://github.com/JuliaAstro/AstroAngles.jl/discussions).
 
 ## License
+
+This code is MIT licensed. For more information, see [LICENSE](LICENSE).
