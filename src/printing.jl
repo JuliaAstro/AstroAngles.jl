@@ -26,11 +26,13 @@ format_angle(w, m, s; kwargs...) = format_angle((w, m, s); kwargs...)
 
 function format_angle(angle, delim::Union{<:AbstractString, Char})
     whole, min, sec = angle
-    return string(Int(whole), delim, Int(min), delim, sec)
+    sgn = signbit(whole) ? '-' : ""
+    return string(sgn, Int(whole), delim, Int(min), delim, sec)
 end
 
 function format_angle(angle, delims::Union{<:AbstractVector, <:Tuple})
     whole, min, sec = angle
     d1, d2, d3 = delims
-    return string(Int(whole), d1, Int(min), d2, sec, d3)
+    sgn = signbit(whole) ? '-' : ""
+    return string(sgn, Int(whole), d1, Int(min), d2, sec, d3)
 end

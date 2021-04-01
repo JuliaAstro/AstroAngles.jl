@@ -62,3 +62,12 @@ macro tmt(typ,expr)
     @test hms"12:37:34.2344"ha ≈ hms2ha(hms)
     @tmt ErrorException @hms_str("12:37:34.2344", "invalid")
 end
+
+@testset "negatives" begin
+    @test parse_dms("-0:0:1") == (-0.0, 0.0, 1.0)
+    @test parse_hms("-0:0:1") == (-0.0, 0.0, 1.0)
+    @test parse_dms("- 0:0:1") == (-0.0, 0.0, 1.0)
+    @test parse_hms("- 0:0:1") == (-0.0, 0.0, 1.0)
+    @test parse_dms("+0:0:1") == (0.0, 0.0, 1.0)
+    @test parse_hms("+0:0:1") == (0.0, 0.0, 1.0)
+end

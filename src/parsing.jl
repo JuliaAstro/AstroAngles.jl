@@ -1,6 +1,6 @@
 
-const dms_re = r"([+-]?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
-const hms_re = r"([+-]?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
+const dms_re = r"([+-]?\s?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
+const hms_re = r"([+-]?\s?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
 
 """
     parse_dms(input)
@@ -13,7 +13,7 @@ Parses a string input in "deg:arcmin:arcsec" format to the tuple `(degrees, arcm
 function parse_dms(input)
     m = match(dms_re, strip(input))
     m === nothing && error("Could not parse \"$input\" to sexagesimal")
-    deg = parse(Float64, m.captures[1])
+    deg = parse(Float64, filter(!isspace, m.captures[1]))
     min = parse(Float64, m.captures[2])
     sec = parse(Float64, m.captures[3])
     return deg, min, sec
@@ -30,7 +30,7 @@ Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seco
 function parse_hms(input)
     m = match(hms_re, strip(input))
     m === nothing && error("Could not parse \"$input\" to hour angles")
-    ha = parse(Float64, m.captures[1])
+    ha = parse(Float64, filter(!isspace, m.captures[1]))
     min = parse(Float64, m.captures[2])
     sec = parse(Float64, m.captures[3])
     return ha, min, sec

@@ -40,3 +40,8 @@ end
     has = randha(rng, 100)
     test_print_integration(has, ha2dms, parse_dms)
 end
+
+@testset "negatives" begin
+    @test format_angle(parse_dms("-0:0:1.0")) == "-0:0:1.0"
+    @test format_angle(parse_hms("-0:0:1.0")) == "-0:0:1.0"
+end
