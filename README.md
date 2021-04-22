@@ -25,24 +25,26 @@ pkg> add AstroAngles#main
 
 ### Angle Parsing Utilities
 
-String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:sec" format can be parsed using a variety of delimiters, which can be mixed together (e.g. can use `°` after degrees but `:` after the arcminutes)
+String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:sec" format can be parsed using a variety of delimiters, which can be mixed together (e.g. can use `°` after degrees but `:` after the arcminutes). The directions "S" and "W" are considered negative and "-1:0:0S" is 1 degree North, for example.
 
 #### dms formats
 
 ```julia
-"[+-]xx:xx:xx.x"
-"[+-]xx xx xx.x"
-"[+-]xxdxxmxx.xs"
-"[+-]xx°xx'xx.x\""
+"[+-]xx:xx:xx.x[NS]"
+"[+-]xx xx xx.x[NS]"
+"[+-]xxdxxmxx.xs[NS]"
+"[+-]xx°xx'xx.x\"[NS]"
+"[+-]xx°xx′xx.x″[NS]" # \prime, \pprime
 ```
 
 #### hms formats
 
 ```julia
-"[+-]xx:xx:xx.x"
-"[+-]xx xx xx.x"
-"[+-]xxhxxmxx.xs"
-"[+-]xxhxx'xx.x\""
+"[+-]xx:xx:xx.x[EW]"
+"[+-]xx xx xx.x[EW]"
+"[+-]xxhxxmxx.xs[EW]"
+"[+-]xxhxx'xx.x\"[EW]"
+"[+-]xx°xx′xx.x″[EW]"
 ```
 
 the simplest way to convert is to use the `@dms_str` and `@hms_str` macros, which allows you to choose the output angle type
@@ -155,7 +157,6 @@ julia> dec_d = @. dms2deg(table.dec)
  -11.203611111111112
 [...]
 ```
-
 
 ## Contributing/Support
 

@@ -1,6 +1,6 @@
 
 const dms_re = r"([+-]?\s?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(N|S)?"
-const hms_re = r"([+-]?\s?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(W|E)?"
+const hms_re = r"([+-]?\s?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(E|W)?"
 
 """
     parse_dms(input)
@@ -30,9 +30,9 @@ end
 
 Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
 ```
-"[+-]xx[h ]xx['′m: ]xx[\\\"″s][WE]"
+"[+-]xx[h ]xx['′m: ]xx[\\\"″s][EW]"
 ```
-if the direction ("W" or "E") is provided, "W" is considered negative (and "-1:0:0W" is 1 degree East)
+if the direction ("E" or "W") is provided, "W" is considered negative (and "-1:0:0W" is 1 degree East)
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
