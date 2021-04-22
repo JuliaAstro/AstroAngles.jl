@@ -1,20 +1,15 @@
 
 num = raw"\d+\.?\d*" # x.xx decimal number
 first = "([+-]?\\s?$num)" # leading digit is required, can have +- with 1 space
-deg_delims = join(("°", "d", ":", raw"\s"), "|") # only for dms
-ha_delims = join(("h", ":", raw"\s"), "|") # only for hms
-min_delims = join(("'", "m", ":", "′", raw"\s"), "|") # shared
-sec_delims = join(("\"", "″", "s", raw"\s"), "") # shared
-dms_dirs = join(("N", "S"), "|") # positive first
-hms_dirs = join(("E", "W"), "|")
-# the (?:) groups are non capturing, so we don't have to do special substring indexing
+deg_delims = "[°d:\\s]" # only for dms
+ha_delims = "[h:\\s]" # only for hms
+min_delims = "['m:′\\s]" # shared
+sec_delims = "[\"″s\\s]" # shared
+dms_dirs = "(N|S)" # positive first
+hms_dirs = "(E|W)" # positive first
 # the trailing ()? groups are optional, so only leading digit is required
-const dms_re = Regex("$first(?:$deg_delims)?($num)?(?:$min_delims)?($num)?[$sec_delims]?($dms_dirs)?")
-const hms_re = Regex("$first(?:$ha_delims)?($num)?(?:$min_delims)?($num)?[$sec_delims]?($hms_dirs)?")
-
-
-# const dms_re = r"([+-]?\s?\d+\.?\d*)(?:°|d|:|\s)?(\d+\.?\d*)?(?:'|m|:|′|\s)?(\d+\.?\d*)?[\"″s]?(N|S)?"
-# const hms_re = r"([+-]?\s?\d+\.?\d*)(?:h|:|\s|)?(\d+\.?\d*)?(?:'|m|:|′|\s)?(\d+\.?\d*)?[\"″s]?(E|W)?"
+const dms_re = Regex("$first$deg_delims?($num)?$min_delims?($num)?$sec_delims?$dms_dirs?")
+const hms_re = Regex("$first$ha_delims?($num)?$min_delims?($num)?$sec_delims?$hms_dirs?")
 
 """
     parse_dms(input)
