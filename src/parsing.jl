@@ -1,14 +1,15 @@
 
-const dms_re = r"([+-]?\s?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
-const hms_re = r"([+-]?\s?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:\s](\d+\.?\d*)[\"s]?"
+const dms_re = r"([+-]?\s?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(N|S)?"
+const hms_re = r"([+-]?\s?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(W|E)?"
 
 """
     parse_dms(input)
 
 Parses a string input in "deg:arcmin:arcsec" format to the tuple `(degrees, arcminutes, arcseconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
 ```
-"[+-]xx[°d: ]xx['m: ]xx[\\\"s]"
+"[+-]xx[°d: ]xx['′m: ]xx[\\\"″s][NS]"
 ```
+if the direction ("N" or "S") is provided, "S" is considered negative (and "-1:0:0S" is 1 degree North)
 """
 function parse_dms(input)
     m = match(dms_re, strip(input))
@@ -16,6 +17,11 @@ function parse_dms(input)
     deg = parse(Float64, filter(!isspace, m.captures[1]))
     min = parse(Float64, m.captures[2])
     sec = parse(Float64, m.captures[3])
+    if m.captures[4] !== nothing
+        if m.captures[4] == "S"
+            deg = -deg
+        end
+    end
     return deg, min, sec
 end
 
@@ -24,8 +30,9 @@ end
 
 Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
 ```
-"[+-]xx[h ]xx['m: ]xx[\\\"s]"
+"[+-]xx[h ]xx['′m: ]xx[\\\"″s][WE]"
 ```
+if the direction ("W" or "E") is provided, "W" is considered negative (and "-1:0:0W" is 1 degree East)
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
@@ -33,6 +40,11 @@ function parse_hms(input)
     ha = parse(Float64, filter(!isspace, m.captures[1]))
     min = parse(Float64, m.captures[2])
     sec = parse(Float64, m.captures[3])
+    if m.captures[4] !== nothing
+        if m.captures[4] == "W"
+            ha = -ha
+        end
+    end
     return ha, min, sec
 end
 

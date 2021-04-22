@@ -99,3 +99,12 @@ end
     @test parse_dms("+0:0:1") == (0.0, 0.0, 1.0)
     @test parse_hms("+0:0:1") == (0.0, 0.0, 1.0)
 end
+
+@testset "directions" begin
+    @test parse_dms("1:0:0N") == (1.0, 0.0, 0.0)
+    @test parse_dms("1:0:0S") == (-1.0, 0.0, 0.0)
+    @test parse_dms("-1:0:0S") == (1.0, 0.0, 0.0)
+    @test parse_hms("1:0:0E") == (1.0, 0.0, 0.0)
+    @test parse_hms("1:0:0W") == (-1.0, 0.0, 0.0)
+    @test parse_hms("-1:0:0W") == (1.0, 0.0, 0.0)
+end
