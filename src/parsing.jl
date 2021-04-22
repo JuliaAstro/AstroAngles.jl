@@ -1,6 +1,20 @@
 
-const dms_re = r"([+-]?\s?\d+\.?\d*)[°d:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(N|S)?"
-const hms_re = r"([+-]?\s?\d+\.?\d*)[h:\s](\d+\.?\d*)['m:′\s](\d+\.?\d*)[\"″s]?(E|W)?"
+num = raw"\d+\.?\d*" # x.xx decimal number
+first = "([+-]?\\s?$num)" # leading digit is required, can have +- with 1 space
+deg_delims = join(("°", "d", ":", raw"\s"), "|") # only for dms
+ha_delims = join(("h", ":", raw"\s"), "|") # only for hms
+min_delims = join(("'", "m", ":", "′", raw"\s"), "|") # shared
+sec_delims = join(("\"", "″", "s", raw"\s"), "") # shared
+dms_dirs = join(("N", "S"), "|") # positive first
+hms_dirs = join(("E", "W"), "|")
+# the (?:) groups are non capturing, so we don't have to do special substring indexing
+# the trailing ()? groups are optional, so only leading digit is required
+const dms_re = Regex("$first(?:$deg_delims)?($num)?(?:$min_delims)?($num)?[$sec_delims]?($dms_dirs)?")
+const hms_re = Regex("$first(?:$ha_delims)?($num)?(?:$min_delims)?($num)?[$sec_delims]?($hms_dirs)?")
+
+
+# const dms_re = r"([+-]?\s?\d+\.?\d*)(?:°|d|:|\s)?(\d+\.?\d*)?(?:'|m|:|′|\s)?(\d+\.?\d*)?[\"″s]?(N|S)?"
+# const hms_re = r"([+-]?\s?\d+\.?\d*)(?:h|:|\s|)?(\d+\.?\d*)?(?:'|m|:|′|\s)?(\d+\.?\d*)?[\"″s]?(E|W)?"
 
 """
     parse_dms(input)
@@ -15,8 +29,16 @@ function parse_dms(input)
     m = match(dms_re, strip(input))
     m === nothing && error("Could not parse \"$input\" to sexagesimal")
     deg = parse(Float64, filter(!isspace, m.captures[1]))
-    min = parse(Float64, m.captures[2])
-    sec = parse(Float64, m.captures[3])
+    if m.captures[2] !== nothing
+        min = parse(Float64, m.captures[2])
+    else
+        min = 0.0
+    end
+    if m.captures[3] !== nothing
+        sec = parse(Float64, m.captures[3])
+    else
+        sec = 0.0
+    end
     if m.captures[4] !== nothing
         if m.captures[4] == "S"
             deg = -deg
@@ -38,8 +60,16 @@ function parse_hms(input)
     m = match(hms_re, strip(input))
     m === nothing && error("Could not parse \"$input\" to hour angles")
     ha = parse(Float64, filter(!isspace, m.captures[1]))
-    min = parse(Float64, m.captures[2])
-    sec = parse(Float64, m.captures[3])
+    if m.captures[2] !== nothing
+        min = parse(Float64, m.captures[2])
+    else
+        min = 0.0
+    end
+    if m.captures[3] !== nothing
+        sec = parse(Float64, m.captures[3])
+    else
+        sec = 0.0
+    end
     if m.captures[4] !== nothing
         if m.captures[4] == "W"
             ha = -ha

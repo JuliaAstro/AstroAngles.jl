@@ -112,11 +112,20 @@ end
 end
 
 @testset "astropy examples" begin
-    @test_broken dms2deg("10.2345d") ≈ 10.2345
+    @test dms2deg("10.2345d") ≈ 10.2345
     @test dms2deg("1:2:30.43") ≈ 1.04178611
     @test hms2ha("1 2 0") ≈ 1.03333333
     @test dms2deg("1°2′3″") ≈ dms2deg("1°2′3″N") ≈ 1.03416667
     @test dms2deg("1d2m3.4s") ≈ -dms2deg("1d2m3.4sS") ≈ 1.03427778
     @test hms2ha("-1h2m3s") ≈ -hms2ha("-1h2m3sW") ≈ -1.03416667
     @test dms2deg((-1, 2, 3)) ≈ -1.03416667
+end
+
+@testset "partial representations" begin
+    @test parse_dms("10.234") == (10.234, 0.0, 0.0)
+    @test parse_dms("10.234 0.1") == (10.234, 0.1, 0.0)
+    @test parse_dms("10.234 0.1 0.3") == (10.234, 0.1, 0.3)
+    @test parse_hms("10.234") == (10.234, 0.0, 0.0)
+    @test parse_hms("10.234 0.1") == (10.234, 0.1, 0.0)
+    @test parse_hms("10.234 0.1 0.3") == (10.234, 0.1, 0.3)
 end
