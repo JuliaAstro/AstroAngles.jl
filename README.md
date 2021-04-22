@@ -70,28 +70,28 @@ julia> dms"10.2345d"deg
 10.2345
 
 julia> dms"1:2:30.43"deg
-1.04178611
+1.041786111111111
 
 julia> hms"1 2 0"ha
-1.03333333
+1.0333333333333334
 
 julia> dms"1°2′3″"deg
-1.03416667
+1.0341666666666667
 
 julia> dms"1°2′3″N"deg
-1.03416667
+1.0341666666666667
 
 julia> dms"1d2m3.4s"deg
-1.03427778
+1.0342777777777779
 
 julia> dms"1d2m3.4sS"deg
--1.03427778
+-1.0342777777777779
 
 julia> hms"-1h2m3s"ha
--1.03416667
+-1.0341666666666667
 
 julia> hms"-1h2m3sW"ha
-1.03416667
+1.0341666666666667
 ```
 
 for more control on the output, you can use the `parse_dms` and `parse_hms` methods, which returns a tuple of the parsed `dms` or `hms` values
