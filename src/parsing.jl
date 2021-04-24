@@ -5,20 +5,19 @@ deg_delims = "[°d:\\s]" # only for dms
 ha_delims = "[h:\\s]" # only for hms
 min_delims = "['m:′\\s]" # shared
 sec_delims = "[\"″s\\s]" # shared
-dms_dirs = "(N|S)" # positive first
-hms_dirs = "(E|W)" # positive first
+dirs = "(N|E|S|W)" # positive first
 # the trailing ()? groups are optional, so only leading digit is required
-const dms_re = Regex("$first$deg_delims?($num)?$min_delims?($num)?$sec_delims?$dms_dirs?")
-const hms_re = Regex("$first$ha_delims?($num)?$min_delims?($num)?$sec_delims?$hms_dirs?")
+const dms_re = Regex("$first$deg_delims?($num)?$min_delims?($num)?$sec_delims?$dirs?")
+const hms_re = Regex("$first$ha_delims?($num)?$min_delims?($num)?$sec_delims?$dirs?")
 
 """
     parse_dms(input)
 
 Parses a string input in "deg:arcmin:arcsec" format to the tuple `(degrees, arcminutes, arcseconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
 ```
-"[+-]xx[°d: ]xx['′m: ]xx[\\\"″s][NS]"
+"[+-]xx[°d: ]xx['′m: ]xx[\\\"″s][NESW]"
 ```
-if the direction ("N" or "S") is provided, "S" is considered negative (and "-1:0:0S" is 1 degree North)
+if the direction is provided, "S" and "E" are considered negative (and "-1:0:0S" is 1 degree North)
 """
 function parse_dms(input)
     m = match(dms_re, strip(input))
@@ -34,10 +33,8 @@ function parse_dms(input)
     else
         sec = 0.0
     end
-    if m.captures[4] !== nothing
-        if m.captures[4] == "S"
-            deg = -deg
-        end
+    if m.captures[4] == "S" || m.captures[4] == "W"
+        deg = -deg
     end
     return deg, min, sec
 end
@@ -49,7 +46,7 @@ Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seco
 ```
 "[+-]xx[h ]xx['′m: ]xx[\\\"″s][EW]"
 ```
-if the direction ("E" or "W") is provided, "W" is considered negative (and "-1:0:0W" is 1 degree East)
+if the direction is provided, "S" and "E" are considered negative (and "-1:0:0W" is 1 degree East)
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
@@ -65,10 +62,8 @@ function parse_hms(input)
     else
         sec = 0.0
     end
-    if m.captures[4] !== nothing
-        if m.captures[4] == "W"
-            ha = -ha
-        end
+    if m.captures[4] == "S" || m.captures[4] == "W"
+        ha = -ha
     end
     return ha, min, sec
 end

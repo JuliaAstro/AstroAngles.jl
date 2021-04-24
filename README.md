@@ -30,21 +30,21 @@ String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:s
 #### dms formats
 
 ```julia
-"[+-]xx:xx:xx.x[NS]"
-"[+-]xx xx xx.x[NS]"
-"[+-]xxdxxmxx.xs[NS]"
-"[+-]xx°xx'xx.x\"[NS]"
-"[+-]xx°xx′xx.x″[NS]" # \prime, \pprime
+"[+-]xx:xx:xx.x[NESW]"
+"[+-]xx xx xx.x[NESW]"
+"[+-]xxdxxmxx.xs[NESW]"
+"[+-]xx°xx'xx.x\"[NESW]"
+"[+-]xx°xx′xx.x″[NESW]" # \prime, \pprime
 ```
 
 #### hms formats
 
 ```julia
-"[+-]xx:xx:xx.x[EW]"
-"[+-]xx xx xx.x[EW]"
-"[+-]xxhxxmxx.xs[EW]"
-"[+-]xxhxx'xx.x\"[EW]"
-"[+-]xx°xx′xx.x″[EW]"
+"[+-]xx:xx:xx.x[NESW]"
+"[+-]xx xx xx.x[NESW]"
+"[+-]xxhxxmxx.xs[NESW]"
+"[+-]xxhxx'xx.x\"[NESW]"
+"[+-]xx°xx′xx.x″[NESW]"
 ```
 
 the simplest way to convert is to use the `@dms_str` and `@hms_str` macros, which allows you to choose the output angle type
