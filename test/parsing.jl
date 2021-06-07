@@ -22,6 +22,9 @@ HMS_FSTRINGS = FormatExpr.([
         d, m, s = dms
         str = format(fstring, d, m, s)
         res = parse_dms(str)
+        @show dms
+        @show str
+        @show res
         return all(dms .≈ res)
     end
 
