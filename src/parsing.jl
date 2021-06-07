@@ -7,7 +7,12 @@ min_delims = "['m:′\\s]" # shared
 sec_delims = "[\"″s\\s]" # shared
 dirs = "(N|E|S|W)" # positive first
 # the trailing ()? groups are optional, so only leading digit is required
-const dms_re = Regex("$first$deg_delims?($num)?$min_delims?($num)?$sec_delims?$dirs?")
+const ha_re =  Regex("($num)$ha_delims")
+const deg_re = Regex("($num)$deg_delims")
+const min_re = Regex("($num)$min_delims")
+const sec_re = Regex("($num)$sec_delims?")
+const dir_re = Regex("$dirs")
+const sgn_re = Regex("([+-])")
 const hms_re = Regex("$first$ha_delims?($num)?$min_delims?($num)?$sec_delims?$dirs?")
 
 """
@@ -20,24 +25,29 @@ Parses a string input in "deg:arcmin:arcsec" format to the tuple `(degrees, arcm
 if the direction is provided, "S" and "E" are considered negative (and "-1:0:0S" is 1 degree North)
 """
 function parse_dms(input)
-    m = match(dms_re, strip(input))
-    m === nothing && error("Could not parse \"$input\" to sexagesimal")
-    deg = parse(Float64, filter(!isspace, m.captures[1]))
-    if m.captures[2] !== nothing
-        min = parse(Float64, m.captures[2])
-    else
-        min = 0.0
-    end
-    if m.captures[3] !== nothing
-        sec = parse(Float64, m.captures[3])
-    else
-        sec = 0.0
-    end
-    if m.captures[4] == "S" || m.captures[4] == "W"
-        deg = -deg
-    end
-    return deg, min, sec
+    input = strip(input)
+    idx = 1
+    m_sgn = match(sgn_re, input, idx)
+    !isnothing(m_sgn) && (idx += length(m_sgn.match))
+    m_deg = match(deg_re, input, idx)
+    !isnothing(m_deg) && (idx += length(m_deg.match))
+    m_min = match(min_re, input, idx)
+    !isnothing(m_min) && (idx += length(m_min.match))
+    m_sec = match(sec_re, input, idx)
+    !isnothing(m_sec) && (idx += length(m_sec.match))
+    m_dir = match(dir_re, input, idx)
+    all(isnothing.((m_deg, m_min, m_sec))) && error("Could not parse \"$input\" to sexagesimal")
+    deg = _num_parse(m_deg)
+    min = _num_parse(m_min)
+    sec = _num_parse(m_sec)
+    sgn = _dir_parse(m_dir) * _sgn_parse(m_sgn)
+    return sgn*deg, sgn*min, sgn*sec
 end
+
+# helper functions for parsing
+_num_parse(m) = isnothing(m) ? 0.0 : parse(Float64, m.captures[1])
+_sgn_parse(m) = (!isnothing(m) && (m.captures[1] == "-")) ? -1 : 1
+_dir_parse(m) = (!isnothing(m) && (m.captures[1] ∈ ("S", "W"))) ? -1 : 1
 
 """
     parse_hms(input)
