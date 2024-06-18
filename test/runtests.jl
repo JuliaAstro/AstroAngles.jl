@@ -1,5 +1,5 @@
 using AstroAngles
-using Formatting
+using Format
 using StableRNGs
 using Test
 

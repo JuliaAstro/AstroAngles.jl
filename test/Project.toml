@@ -1,8 +1,8 @@
 [deps]
-Formatting = "59287772-0a20-5a39-b81b-1366585eb4c0"
+Format = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
 StableRNGs = "860ef19b-820b-49d6-a774-d7a799459cd3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
-Formatting = "0.4"
+Format = "1"
 StableRNGs = "1"
