@@ -44,7 +44,7 @@ end
     @test hms2deg(val) === val
     @test hms2ha(val) === val
 end
- 
+
 @testset "parsing" for fstring in HMS_FSTRINGS
     @test all(randhms(rng, 1000)) do hms
         h, m, s = hms
@@ -64,7 +64,7 @@ end
 end
 # test-macro-throws
 # https://discourse.julialang.org/t/exceptions-in-macros-in-julia-0-7-1-0/14145/2
-macro tmt(typ,expr) 
+macro tmt(typ,expr)
     quote
        @test_throws $typ begin
           try
