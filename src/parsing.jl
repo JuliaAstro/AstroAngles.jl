@@ -77,13 +77,13 @@ end
 """
     @dms_str
 
-Parse a string in "deg:arcmin:arcsec" format directly to an angle. By default,
+Parse a string in `"deg:arcmin:arcsec"` format directly to an angle. By default,
 it will be parsed as radians, but the angle can be chosen by adding a flag to
 the end of the string
 
-* dms"..."rad -> radians (default)
-* dms"..."deg -> degrees
-* dms"..."ha -> hour angles
+* `dms"..."rad` -> radians (default)
+* `dms"..."deg` -> degrees
+* `dms"..."ha` -> hour angles
 
 # Examples
 ```jldoctest
@@ -119,13 +119,13 @@ end
 """
     @hms_str
 
-Parse a string in "ha:min:sec" format directly to an angle. By default, it will
+Parse a string in `"ha:min:sec"` format directly to an angle. By default, it will
 be parsed as radians, but the angle can be chosen by adding a flag to the end of
 the string
 
-* hms"..."rad -> radians (default)
-* hms"..."deg -> degrees
-* hms"..."ha -> hour angles
+* `hms"..."rad` -> radians (default)
+* `hms"..."deg` -> degrees
+* `hms"..."ha` -> hour angles
 
 # Examples
 ```jldoctest
