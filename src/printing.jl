@@ -1,4 +1,3 @@
-
 """
     format_angle(parts; delim=':')
 
@@ -9,6 +8,8 @@ outputs. Multiple delimiters can be given in a tuple or vector placed after
 their respective values. For more control over formatting, consider using
 [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like
 [Format.jl](https://github.com/JuliaString/Format.jl).
+
+If any input is `Missing`, returns `missing`.
 
 # Examples
 ```jldoctest
@@ -30,12 +31,15 @@ julia> format_angle(rad2hms(1.5), delim=["h", "m", "s"])
 """
 format_angle(angle; delim=':') = format_angle(angle, delim)
 format_angle(w, m, s; kwargs...) = format_angle((w, m, s); kwargs...)
+format_angle(::Missing; kwargs...) = missing
+format_angle(::Missing, args...; kwargs...) = missing
 
 function format_angle(angle, delim::Union{<:AbstractString, Char})
     whole, min, sec = angle
     sgn = signbit(whole) ? '-' : ""
     return string(sgn, Int(whole), delim, Int(min), delim, sec)
 end
+format_angle(::Missing, delim::Union{<:AbstractString, Char}) = missing
 
 function format_angle(angle, delims::Union{<:AbstractVector, <:Tuple})
     whole, min, sec = angle
@@ -44,3 +48,4 @@ function format_angle(angle, delims::Union{<:AbstractVector, <:Tuple})
     #return string(sgn, Int(whole), d1, Int(min), d2, sec, d3)
     return string(Int(whole), d1, Int(min), d2, sec, d3)
 end
+format_angle(::Missing, delims::Union{<:AbstractVector, <:Tuple}) = missing

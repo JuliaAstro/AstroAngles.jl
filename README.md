@@ -158,6 +158,43 @@ julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
 "-4h19m59.999999999998934s"
 ```
 
+### Handling Missing Values
+
+All angle parsing, conversion, and formatting functions support `Missing` input values and propagate them correctly, returning `missing` as output. This behavior allows these functions to be used smoothly in operations with potentially missing data, such as when working with DataFrames that contain missing values.
+
+```julia
+julia> using AstroAngles, Missing
+
+# Parsing functions
+julia> parse_dms(missing)
+missing
+
+julia> parse_hms(missing)
+missing
+
+# Conversion functions
+julia> rad2ha(missing)
+missing
+
+julia> deg2dms(missing)
+missing
+
+julia> dms2rad(missing, missing, missing)
+missing
+
+julia> hms2deg("12:30:45"), hms2deg(missing)
+(187.6875, missing)
+
+# Formatting function
+julia> format_angle(missing)
+missing
+
+julia> format_angle(deg2dms(45.0)), format_angle(missing)
+("45:0:0.0", missing)
+```
+
+This feature ensures type stability when working with data that may contain missing values, which is particularly useful in data analysis workflows involving astronomical data where some measurements might be unavailable.
+
 ### Example: reading coordinates from a table
 
 Here's an example of reading sky coordinates from a CSV formatted target list and converting them to degrees-
