@@ -59,4 +59,7 @@ end
     @test ismissing(hms2ha(missing))
     @test ismissing(hms2deg(missing))
     @test ismissing(hms2rad(missing))
+
+    # Test with partially missing values
+    @test ismissing(hms2ha(18, 23.9, missing))
 end

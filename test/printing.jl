@@ -57,4 +57,7 @@ end
     
     # Test with tuple form
     @test ismissing(format_angle(missing, missing, missing))
+
+    # Test with partially missing values
+    @test ismissing(format_angle(missing, 2.39, "15"))
 end
