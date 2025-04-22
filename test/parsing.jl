@@ -137,17 +137,15 @@ end
 end
 
 @testset "missing value handling in parsing" begin
-    using Missings
-    
     # Test parsing functions with missing values
     @test ismissing(parse_dms(missing))
     @test ismissing(parse_hms(missing))
-    
+
     # Test string inputs for dms/hms with missing values
     @test ismissing(dms2deg(missing))
     @test ismissing(dms2rad(missing))
     @test ismissing(dms2ha(missing))
-    
+
     @test ismissing(hms2deg(missing))
     @test ismissing(hms2rad(missing))
     @test ismissing(hms2ha(missing))
