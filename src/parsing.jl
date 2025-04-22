@@ -1,4 +1,3 @@
-
 num = raw"\d+\.?\d*" # x.xx decimal number
 first = "([+-]?\\s?$num)" # leading digit is required, can have +- with 1 space
 deg_delims = "[°d:\\s]" # only for dms
@@ -21,6 +20,8 @@ all work and can be mixed together (the last delimiter is optional):
 ```
 if the direction is provided, "S" and "E" are considered negative (and
 "-1:0:0S" is 1 degree North)
+
+If `input` is `Missing`, returns `missing`.
 """
 function parse_dms(input)
     m = match(dms_re, strip(input))
@@ -42,6 +43,8 @@ function parse_dms(input)
     return deg, min, sec
 end
 
+parse_dms(::Missing) = missing
+
 """
     parse_hms(input)
 
@@ -53,6 +56,8 @@ is optional):
 ```
 if the direction is provided, "S" and "E" are considered negative (and "-1:0:0W"
 is 1 degree East)
+
+If `input` is `Missing`, returns `missing`.
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
@@ -73,6 +78,8 @@ function parse_hms(input)
     end
     return ha, min, sec
 end
+
+parse_hms(::Missing) = missing
 
 """
     @dms_str
