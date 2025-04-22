@@ -46,15 +46,13 @@ end
 end
 
 @testset "missing value handling in printing" begin
-    using Missings
-    
     # Test with missing value
     @test ismissing(format_angle(missing))
-    
+
     # Test with missing value and delimiter
     @test ismissing(format_angle(missing, delim=":"))
     @test ismissing(format_angle(missing, delim=[" ", ":", ""]))
-    
+
     # Test with tuple form
     @test ismissing(format_angle(missing, missing, missing))
 

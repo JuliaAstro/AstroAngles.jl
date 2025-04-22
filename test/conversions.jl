@@ -25,24 +25,22 @@ end
 end
 
 @testset "missing value handling" begin
-    using Missings
-    
     # Test rad2xxx functions
     @test ismissing(rad2ha(missing))
     @test ismissing(rad2dms(missing))
     @test ismissing(rad2hms(missing))
-    
+
     # Test deg2xxx functions
     @test ismissing(deg2ha(missing))
     @test ismissing(deg2dms(missing))
     @test ismissing(deg2hms(missing))
-    
+
     # Test ha2xxx functions
     @test ismissing(ha2rad(missing))
     @test ismissing(ha2deg(missing))
     @test ismissing(ha2hms(missing))
     @test ismissing(ha2dms(missing))
-    
+
     # Test dms2xxx functions
     @test ismissing(dms2deg(missing, missing, missing))
     @test ismissing(dms2deg(missing, missing, missing))
@@ -51,7 +49,7 @@ end
     @test ismissing(dms2deg(missing))
     @test ismissing(dms2rad(missing))
     @test ismissing(dms2ha(missing))
-    
+
     # Test hms2xxx functions
     @test ismissing(hms2ha(missing, missing, missing))
     @test ismissing(hms2deg(missing, missing, missing))
