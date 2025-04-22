@@ -39,7 +39,6 @@ function format_angle(angle, delim::Union{<:AbstractString, Char})
     sgn = signbit(whole) ? '-' : ""
     return string(sgn, Int(whole), delim, Int(min), delim, sec)
 end
-format_angle(::Missing, delim::Union{<:AbstractString, Char}) = missing
 
 function format_angle(angle, delims::Union{<:AbstractVector, <:Tuple})
     whole, min, sec = angle
@@ -48,4 +47,3 @@ function format_angle(angle, delims::Union{<:AbstractVector, <:Tuple})
     #return string(sgn, Int(whole), d1, Int(min), d2, sec, d3)
     return string(Int(whole), d1, Int(min), d2, sec, d3)
 end
-format_angle(::Missing, delims::Union{<:AbstractVector, <:Tuple}) = missing
