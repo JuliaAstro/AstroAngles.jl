@@ -191,21 +191,24 @@ julia> dec_d = @. dms2deg(table.dec)
  -11.203611111111112
 [...]
 ```
+
 ### Handling Missing Values
 
 All angle parsing, conversion, and formatting functions support `Missing` input values and propagate them correctly, returning `missing` as output. This behavior allows these functions to be used smoothly in operations with potentially missing data, such as when working with DataFrames that contain missing values.
 
-```julia
-julia> using AstroAngles, Missing
+```jldoctest
+julia> using AstroAngles
 
-# Parsing functions
+julia> # Parsing functions
+
 julia> parse_dms(missing)
 missing
 
 julia> parse_hms(missing)
 missing
 
-# Conversion functions
+julia> # Conversion functions
+
 julia> rad2ha(missing)
 missing
 
@@ -218,7 +221,8 @@ missing
 julia> hms2deg("12:30:45"), hms2deg(missing)
 (187.6875, missing)
 
-# Formatting function
+julia> # Formatting function
+
 julia> format_angle(missing)
 missing
 
