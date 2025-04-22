@@ -3,6 +3,7 @@ using Format
 using Missings
 using StableRNGs
 using Test
+using Documenter
 
 rng = StableRNG(206265)
 
@@ -13,6 +14,9 @@ randdms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2dms
 randhms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2hms
 
 @testset "AstroAngles" begin
+    DocMeta.setdocmeta!(AstroAngles, :DocTestSetup, :(using AstroAngles))
+    doctest(AstroAngles)
+
     @testset "conversions" begin include("conversions.jl") end
     @testset "parsing" begin include("parsing.jl") end
     @testset "printing" begin include("printing.jl") end

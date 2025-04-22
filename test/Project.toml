@@ -1,10 +1,12 @@
 [deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 Format = "1fa38f19-a742-5d3f-a2b9-30dd87b9d5f8"
 Missings = "e1d29d7a-bbdc-5cf2-9ac0-f12de2c33e28"
 StableRNGs = "860ef19b-820b-49d6-a774-d7a799459cd3"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
+Documenter = "1"
 Format = "1"
 Missings = "1"
 StableRNGs = "1"
