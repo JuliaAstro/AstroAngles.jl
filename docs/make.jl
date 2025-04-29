@@ -12,6 +12,9 @@ makedocs(
         "Home" => "index.md",
         "API Reference" => "api.md",
     ],
+    format = Documenter.HTML(;
+         canonical = "https://JuliaAstro.org/AstroAngles/stable/",
+    ),
 )
 
 deploydocs(
