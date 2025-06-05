@@ -1,10 +1,12 @@
 # AstroAngles.jl
 
+[![Documentation - Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/AstroAngles/)
+[![Documentation - Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://juliaastro.org/AstroAngles.jl/dev)
+
+[![Coverage](https://codecov.io/gh/JuliaAstro/AstroAngles.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/AstroAngles.jl)
 [![Build Status](https://github.com/JuliaAstro/AstroAngles.jl/workflows/CI/badge.svg)](https://github.com/JuliaAstro/AstroAngles.jl/actions)
 [![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/A/AstroAngles.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
-[![Coverage](https://codecov.io/gh/JuliaAstro/AstroAngles.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/AstroAngles.jl)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-blue.svg)](https://juliaastro.org/AstroAngles/)
 
 Lightweight string parsing and representation of angles.
 

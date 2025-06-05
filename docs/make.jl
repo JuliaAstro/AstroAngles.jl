@@ -19,4 +19,5 @@ makedocs(
 
 deploydocs(
     repo = "github.com/JuliaAstro/AstroAngles.jl.git",
+    versions = ["stable" => "v^", "v#.#"] # Restrict to minor releases,
 )
