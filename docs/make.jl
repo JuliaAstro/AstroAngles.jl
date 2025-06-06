@@ -4,7 +4,7 @@ using Documenter.Remotes: GitHub
 
 DocMeta.setdocmeta!(AstroAngles, :DocTestSetup, :(using AstroAngles))
 
-makedocs(
+makedocs(;
     modules = [AstroAngles],
     sitename = "AstroAngles.jl",
     repo = GitHub("JuliaAstro/AstroAngles.jl"),
@@ -12,8 +12,12 @@ makedocs(
         "Home" => "index.md",
         "API Reference" => "api.md",
     ],
+    format = Documenter.HTML(;
+         canonical = "https://JuliaAstro.org/AstroAngles/stable/",
+    ),
 )
 
-deploydocs(
+deploydocs(;
     repo = "github.com/JuliaAstro/AstroAngles.jl.git",
+    versions = ["stable" => "v^", "v#.#"], # Restrict to minor releases
 )
