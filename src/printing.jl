@@ -16,46 +16,43 @@ If any input is `Missing`, returns `missing`.
 julia> ang = 45.0; # degrees
 
 julia> format_angle(deg2dms(ang))
-"45:00:00.00"
+"45:0:0.0"
 
-julia> format_angle(deg2hms(ang))
+julia> format_angle(deg2hms(ang); pad=true)
 "03:00:00.00"
 
-julia> format_angle(rad2hms(1.5), delim=["h", "m", "s"])
+julia> format_angle(rad2hms(1.5), delim=["h", "m", "s"]; pad=true)
 "05h43m46.48s"
+
+julia> format_angle(rad2hms(1.5), delim=["h", "m", "s"]; digits=5)
+"5h43m46.48062"
+
+julia> format_angle(rad2hms(1.5), delim=["h", "m", "s"]; digits="all")
+"5h43m46.48062470963538s"
 ```
 
 # See also
-[`deg2dms`](@ref), [`deg2hms`](@ref), [`rad2dms`](@ref), [`rad2hms`](@ref),
-[`ha2dms`](@ref), [`ha2hms`](@ref)
+[`deg2dms`](@ref), [`deg2hms`](@ref), [`rad2dms`](@ref), [`rad2hms`](@ref), [`ha2dms`](@ref), [`ha2hms`](@ref)
 """
-format_angle(angle; delim=':', kwargs...) = format_angle(angle, delim, kwargs...)
+
+format_angle(angle; delim=':', kwargs...) = format_angle(angle, delim; kwargs...)
+format_angle(angle, delim::Union{<:AbstractString, Char}; kwargs...) = format_angle(angle, [delim]; kwargs...)
 format_angle(w, m, s; kwargs...) = format_angle((w, m, s); kwargs...)
 format_angle(::Missing; kwargs...) = missing
 format_angle(::Missing, args...; kwargs...) = missing
 
-function format_angle(angle, delim::Union{<:AbstractString, Char}; digits::Int=2, pad::Bool=true)::String
-    whole, min, sec = angle
+function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String}=2, pad::Bool=false)
+    whole, min, sec, delim = angle..., collect(delim)
     sgn = signbit(whole) ? '-' : ""
-    whole, min = Int.([whole, min])
-    if pad
-      whole, min = lpad.([whole, min], 2, "0")
-      sec = join(lpad.([trunc(Int, sec), trunc(Int, sec % 1 * 10^digits)], 2, "0"), ".")
-    else
-      sec = round(sec; digits=digits)
-    end
-    return string(sgn, whole, delim, min, delim, sec)
-end
 
-function format_angle(angle, delims::Union{<:AbstractVector, <:Tuple}; digits::Int=2, pad::Bool=true)::String
-    whole, min, sec = angle
-    d1, d2, d3 = delims
-    whole, min = Int.([whole, min])
+    whole, min = trunc.(Int, [whole, min])
+    sec = digits == "all" ? sec : round(sec; digits)
     if pad
       whole, min = lpad.([whole, min], 2, "0")
-      sec = join(lpad.([trunc(Int, sec), trunc(Int, sec % 1 * 10^digits)], 2, "0"), ".")
-    else
-      sec = round(sec; digits=digits)
+      sec = join(lpad.(split("$sec", "."), 2, "0"), ".")
     end
-    return string(whole, d1, min, d2, sec, d3)
+  
+    angle = string.(Any[whole, min, sec])
+    printout = length(delim) == 1 ? join(angle, delim[begin]) : permutedims([angle delim])[:]
+    return string(length(delim) == 1 ? sgn : "", printout...)
 end

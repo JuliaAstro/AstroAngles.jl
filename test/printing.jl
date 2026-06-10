@@ -5,27 +5,27 @@
     @test str == "45:0:0.0"
     strd = format_angle(deg2hms(angle), delim=["d", "m", "s"]; pad=true)
     @test strd == "03d00m00.00s"
-    @test_throws BoundsError format_angle(deg2dms(angle), delim=(':', ' '))
+    @test_throws DimensionMismatch format_angle(deg2dms(angle), delim=(':', ' '))
 end
 
 function test_print_integration(angles, f1, f2)
     @test all(angles) do angle
         parts = f1(angle)
-        str = format_angle(parts)
+        str = format_angle(parts, digits="all")
         res = f2(str)
         return all(res .≈ parts)
     end
 
     @test all(angles) do angle
         parts = f1(angle)
-        str = format_angle(parts, delim=" ")
+        str = format_angle(parts, delim=" ", digits="all")
         res = f2(str)
         return all(res .≈ parts)
     end
 
     @test all(angles) do angle
         parts = f1(angle)
-        str = format_angle(parts, delim=(":", "m", ""))
+        str = format_angle(parts, delim=(":", "m", ""), digits="all")
         res = f2(str)
         return all(res .≈ parts)
     end
@@ -34,15 +34,17 @@ end
 @testset "printing integration" begin
     degrees = randdegree(rng, 100)
     test_print_integration(degrees, deg2dms, parse_dms)
+
     radians = randrad(rng, 100)
     test_print_integration(radians, rad2dms, parse_dms)
+
     has = randha(rng, 100)
     test_print_integration(has, ha2dms, parse_dms)
 end
 
 @testset "negatives" begin
-    @test format_angle(parse_dms("-0:0:1.0")) == "-0:0:01.0"
-    @test format_angle(parse_hms("-0:0:1.0")) == "-0:0:01.0"
+    @test format_angle(parse_dms("-0:0:1.0")) == "-0:0:1.0"
+    @test format_angle(parse_hms("-0:0:1.0")) == "-0:0:1.0"
 end
 
 @testset "missing value handling in printing" begin
