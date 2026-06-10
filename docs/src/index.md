@@ -1,6 +1,7 @@
 ```@meta
 DocTestSetup = :(using AstroAngles)
 ```
+
 # AstroAngles.jl
 
 [![Documentation - Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/AstroAngles/)
@@ -161,7 +162,7 @@ julia> format_angle(deg2dms(45.0))
 "45:0:0.0"
 
 julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
-"-4h19m59.999999999998934s"
+"-4h19m60.0s"
 ```
 
 ### Example: reading coordinates from a table
