@@ -3,8 +3,8 @@
 
     str = format_angle(deg2dms(angle))
     @test str == "45:0:0.0"
-    strd = format_angle(deg2hms(angle), delim=["d", "m", "s"])
-    @test strd == "3d0m0.0s"
+    strd = format_angle(deg2hms(angle), delim=["d", "m", "s"]; pad=true)
+    @test strd == "03d00m00.00s"
     @test_throws BoundsError format_angle(deg2dms(angle), delim=(':', ' '))
 end
 
@@ -41,8 +41,8 @@ end
 end
 
 @testset "negatives" begin
-    @test format_angle(parse_dms("-0:0:1.0")) == "-0:0:1.0"
-    @test format_angle(parse_hms("-0:0:1.0")) == "-0:0:1.0"
+    @test format_angle(parse_dms("-0:0:1.0")) == "-0:0:01.0"
+    @test format_angle(parse_hms("-0:0:1.0")) == "-0:0:01.0"
 end
 
 @testset "missing value handling in printing" begin
