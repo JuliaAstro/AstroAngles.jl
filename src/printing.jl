@@ -53,9 +53,6 @@ function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Un
     if pad
       whole, min = lpad.((whole, min), 2, "0")
       sec = join(lpad.(split("$sec", "."), 2, "0"), ".")
-      if sgn == '-' && whole == "00"
-          whole = "0"  # avoid "-00" display for negative zero
-      end
     end
 
     angle = string.((whole, min, sec))
