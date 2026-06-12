@@ -42,17 +42,27 @@ format_angle(::Missing; kwargs...) = missing
 format_angle(::Missing, args...; kwargs...) = missing
 
 function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String}=2, pad::Bool=false)
-    whole, min, sec, delim = angle..., collect(delim)
+    whole, min, sec, delim = angle..., delim
+    length(delim) in (1, 3) || throw(ArgumentError(
+        "delimiter must have 1 or 3 elements, got $(length(delim))"))
     sgn = signbit(whole) ? '-' : ""
 
-    whole, min = trunc.(Int, [whole, min])
+    whole, min = trunc.(Int, (whole, min))
+    whole = abs(whole)  # sign handled separately via sgn
     sec = digits == "all" ? sec : round(sec; digits)
     if pad
-      whole, min = lpad.([whole, min], 2, "0")
+      whole, min = lpad.((whole, min), 2, "0")
       sec = join(lpad.(split("$sec", "."), 2, "0"), ".")
+      if sgn == '-' && whole == "00"
+          whole = "0"  # avoid "-00" display for negative zero
+      end
     end
-  
-    angle = string.(Any[whole, min, sec])
-    printout = length(delim) == 1 ? join(angle, delim[begin]) : permutedims([angle delim])[:]
-    return string(length(delim) == 1 ? sgn : "", printout...)
+
+    angle = string.((whole, min, sec))
+    printout = if length(delim) == 1
+        join(angle, delim[begin])
+    else
+        string(angle[1], delim[1], angle[2], delim[2], angle[3], delim[3])
+    end
+    return string(sgn, printout...)
 end

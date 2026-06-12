@@ -5,7 +5,10 @@
     @test str == "45:0:0.0"
     strd = format_angle(deg2hms(angle), delim=["d", "m", "s"]; pad=true)
     @test strd == "03d00m00.00s"
-    @test_throws DimensionMismatch format_angle(deg2dms(angle), delim=(':', ' '))
+    @test_throws ArgumentError format_angle(deg2dms(angle), delim=(':', ' '))
+    @test_throws ArgumentError format_angle(deg2dms(angle), delim=(':', ' ', 'x', 'y'))
+    err = try format_angle(deg2dms(angle), delim=(':', ' ')) catch e; e end
+    @test occursin("1 or 3", err.msg)
 end
 
 function test_print_integration(angles, f1, f2)
@@ -43,8 +46,18 @@ end
 end
 
 @testset "negatives" begin
+    # negative zero — sign only from sgn (whole=0 has no intrinsic sign)
     @test format_angle(parse_dms("-0:0:1.0")) == "-0:0:1.0"
     @test format_angle(parse_hms("-0:0:1.0")) == "-0:0:1.0"
+    # real negatives with single delim — must NOT produce double minus
+    @test format_angle(deg2dms(-45.0)) == "-45:0:0.0"
+    @test format_angle(deg2hms(-65.0)) == "-4:19:60.0"
+    # real negatives with multi-delim
+    @test format_angle(deg2hms(-65.0), delim=["h", "m", "s"]) == "-4h19m60.0s"
+    # negative with pad — no double minus
+    @test format_angle(deg2dms(-45.0); pad=true) == "-45:00:00.00"
+    # negative near zero with pad — avoid "-00"
+    @test format_angle(deg2dms(-0.5); pad=true) == "-0:30:00.00"
 end
 
 @testset "missing value handling in printing" begin
