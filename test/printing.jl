@@ -58,6 +58,10 @@ end
     @test format_angle(deg2dms(-45.0); pad=true) == "-45:00:00.00"
     # negative near zero with pad -- sign on zero-padded degrees
     @test format_angle(deg2dms(-0.5); pad=true) == "-00:30:00.00"
+    # alwayssign
+    @test format_angle(deg2dms(45.0); alwayssign=true) == "+45:0:0.0"
+    @test format_angle(deg2dms(-45.0); alwayssign=true) == "-45:0:0.0"
+    @test format_angle(deg2dms(0.5); alwayssign=true, pad=true) == "+00:30:00.00"
 end
 
 @testset "missing value handling in printing" begin
