@@ -56,8 +56,8 @@ end
     @test format_angle(deg2hms(-65.0), delim=["h", "m", "s"]) == "-4h19m60.0s"
     # negative with pad — no double minus
     @test format_angle(deg2dms(-45.0); pad=true) == "-45:00:00.00"
-    # negative near zero with pad — avoid "-00"
-    @test format_angle(deg2dms(-0.5); pad=true) == "-0:30:00.00"
+    # negative near zero with pad -- sign on zero-padded degrees
+    @test format_angle(deg2dms(-0.5); pad=true) == "-00:30:00.00"
 end
 
 @testset "missing value handling in printing" begin
