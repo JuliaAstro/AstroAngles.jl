@@ -1,4 +1,3 @@
-
 DMS_FSTRINGS = FormatExpr.([
     "{1:d} {2:d} {3}",
     "{1:d}:{2:d}:{3}",
@@ -47,7 +46,7 @@ end
     @test hms2deg(val) === val
     @test hms2ha(val) === val
 end
- 
+
 @testset "parsing" for fstring in HMS_FSTRINGS
     @test all(randhms(rng, 1000)) do hms
         h, m, s = hms
@@ -67,7 +66,7 @@ end
 end
 # test-macro-throws
 # https://discourse.julialang.org/t/exceptions-in-macros-in-julia-0-7-1-0/14145/2
-macro tmt(typ,expr) 
+macro tmt(typ,expr)
     quote
        @test_throws $typ begin
           try
@@ -138,4 +137,19 @@ end
     @test parse_hms("10.234") == (10.234, 0.0, 0.0)
     @test parse_hms("10.234 0.1") == (10.234, 0.1, 0.0)
     @test parse_hms("10.234 0.1 0.3") == (10.234, 0.1, 0.3)
+end
+
+@testset "missing value handling in parsing" begin
+    # Test parsing functions with missing values
+    @test ismissing(parse_dms(missing))
+    @test ismissing(parse_hms(missing))
+
+    # Test string inputs for dms/hms with missing values
+    @test ismissing(dms2deg(missing))
+    @test ismissing(dms2rad(missing))
+    @test ismissing(dms2ha(missing))
+
+    @test ismissing(hms2deg(missing))
+    @test ismissing(hms2rad(missing))
+    @test ismissing(hms2ha(missing))
 end

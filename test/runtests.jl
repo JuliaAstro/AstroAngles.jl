@@ -1,7 +1,8 @@
 using AstroAngles
-using Formatting
+using Format
 using StableRNGs
 using Test
+using Documenter
 
 rng = StableRNG(206265)
 
@@ -11,6 +12,11 @@ randha(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 48
 randdms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2dms
 randhms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2hms
 
-@testset "conversions" begin include("conversions.jl") end
-@testset "parsing" begin include("parsing.jl") end
-@testset "printing" begin include("printing.jl") end
+@testset "AstroAngles" begin
+    DocMeta.setdocmeta!(AstroAngles, :DocTestSetup, :(using AstroAngles))
+    doctest(AstroAngles)
+
+    @testset "conversions" begin include("conversions.jl") end
+    @testset "parsing" begin include("parsing.jl") end
+    @testset "printing" begin include("printing.jl") end
+end

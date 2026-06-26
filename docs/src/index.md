@@ -1,3 +1,7 @@
+```@meta
+DocTestSetup = :(using AstroAngles)
+```
+
 # AstroAngles.jl
 
 [![Documentation - Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://juliaastro.org/AstroAngles/)
@@ -14,13 +18,13 @@ Lightweight string parsing and representation of angles.
 
 To install use [Pkg](https://julialang.github.io/Pkg.jl/v1/managing-packages/). From the REPL, press `]` to enter Pkg-mode
 
-```julia-repl
+```julia
 pkg> add AstroAngles
 ```
 
 If you want to use the most up-to-date version of the code, check it out from `main`
 
-```julia-repl
+```julia
 pkg> add AstroAngles#main
 ```
 
@@ -52,7 +56,7 @@ String representations of angles in both "degree:arcmin:arcsec" and  "hour:min:s
 
 the simplest way to convert is to use the `@dms_str` and `@hms_str` macros, which allows you to choose the output angle type
 
-```julia-repl
+```jldoctest
 julia> dms"12:17:25.3"
 0.21450726764795752
 
@@ -68,7 +72,7 @@ julia> dms"12:17:25.3"ha
 
 here is a showcase of the variety of ways to parse inputs
 
-```julia-repl
+```jldoctest
 julia> dms"10.2345d"deg
 10.2345
 
@@ -104,7 +108,7 @@ parse_dms # string -> (deg, arcmin, arcsec)
 parse_hms # string -> (hours, mins, secs)
 ```
 
-```julia-repl
+```jldoctest
 julia> parse_dms("12:17:25.3")
 (12.0, 17.0, 25.3)
 
@@ -151,9 +155,9 @@ the above functions can take a string as input and will automatically parse it (
 
 ### Formatting angles
 
-Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Formatting.jl](https://github.com/JuliaIO/Formatting.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
+Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Format.jl](https://github.com/JuliaString/Format.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
 
-```julia-repl
+```jldoctest
 julia> format_angle(deg2dms(45.0))
 "45:0:0.0"
 
@@ -161,54 +165,14 @@ julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
 "-4h19m60.0s"
 ```
 
-### Handling Missing Values
-
-All angle parsing, conversion, and formatting functions support `Missing` input values and propagate them correctly, returning `missing` as output. This behavior allows these functions to be used smoothly in operations with potentially missing data, such as when working with DataFrames that contain missing values.
-
-```julia-repl
-julia> using AstroAngles, Missing
-
-julia> # Parsing functions
-
-julia> parse_dms(missing)
-missing
-
-julia> parse_hms(missing)
-missing
-
-julia> # Conversion functions
-
-julia> rad2ha(missing)
-missing
-
-julia> deg2dms(missing)
-missing
-
-julia> dms2rad(missing, missing, missing)
-missing
-
-julia> hms2deg("12:30:45"), hms2deg(missing)
-(187.6875, missing)
-
-julia> # Formatting functions
-
-julia> format_angle(missing)
-missing
-
-julia> format_angle(deg2dms(45.0)), format_angle(missing)
-("45:0:0.0", missing)
-```
-
-This feature ensures type stability when working with data that may contain missing values, which is particularly useful in data analysis workflows involving astronomical data where some measurements might be unavailable.
-
 ### Example: reading coordinates from a table
 
-Here's an example of reading sky coordinates from a CSV formatted target list and converting them to degrees-
+Here's an example of reading sky coordinates from a CSV formatted target list and converting them to degrees:
 
 ```julia-repl
 julia> using AstroAngles, CSV, DataFrames
 
-julia> table = CSV.read("target_list.csv", DataFrame);
+julia> table = CSV.File("target_list.csv") |> DataFrame;
 
 julia> [table.ra table.dec]
 203×2 Matrix{String}:
@@ -232,10 +196,51 @@ julia> dec_d = @. dms2deg(table.dec)
 [...]
 ```
 
+### Handling Missing Values
+
+All angle parsing, conversion, and formatting functions support `Missing` input values and propagate them correctly, returning `missing` as output. This behavior allows these functions to be used smoothly in operations with potentially missing data, such as when working with DataFrames that contain missing values.
+
+```jldoctest
+julia> using AstroAngles
+
+julia> # Parsing functions
+
+julia> parse_dms(missing)
+missing
+
+julia> parse_hms(missing)
+missing
+
+julia> # Conversion functions
+
+julia> rad2ha(missing)
+missing
+
+julia> deg2dms(missing)
+missing
+
+julia> dms2rad(missing, missing, missing)
+missing
+
+julia> hms2deg("12:30:45"), hms2deg(missing)
+(187.6875, missing)
+
+julia> # Formatting function
+
+julia> format_angle(missing)
+missing
+
+julia> format_angle(deg2dms(45.0)), format_angle(missing)
+("45:0:0.0", missing)
+```
+
+This feature ensures type stability when working with data that may contain missing values, which is particularly useful in data analysis workflows involving astronomical data where some measurements might be unavailable.
+
 ## Contributing/Support
 
 To contribute, feel free to open a [pull request](https://github.com/JuliaAstro/AstroAngles.jl/pulls). If you run into problems, please open an [issue](https://github.com/JuliaAstro/AstroAngles.jl/issues). To discuss ideas, usage, or to plan contributions, open a new [discussion](https://github.com/JuliaAstro/AstroAngles.jl/discussions).
 
 ## License
 
-This code is MIT licensed. For more information, see [LICENSE](LICENSE).
+This code is MIT licensed. For more information, see the LICENSE file in the
+AstroAngles.jl repository.

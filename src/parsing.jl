@@ -1,4 +1,3 @@
-
 num = raw"\d+\.?\d*" # x.xx decimal number
 first = "([+-]?\\s?$num)" # leading digit is required, can have +- with 1 space
 deg_delims = "[°d:\\s]" # only for dms
@@ -18,11 +17,16 @@ const hms_re = Regex("$first$ha_delims?($num)?$min_delims?($num)?$sec_delims?$di
 """
     parse_dms(input)
 
-Parses a string input in "deg:arcmin:arcsec" format to the tuple `(degrees, arcminutes, arcseconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
+Parses a string input in "deg:arcmin:arcsec" format to the tuple
+`(degrees, arcminutes, arcseconds)`. The following delimiters will
+all work and can be mixed together (the last delimiter is optional):
 ```
 "[+-]xx[°d: ]xx['′m: ]xx[\\\"″s][NESW]"
 ```
-if the direction is provided, "S" and "E" are considered negative (and "-1:0:0S" is 1 degree North)
+if the direction is provided, "S" and "E" are considered negative (and
+"-1:0:0S" is 1 degree North)
+
+If `input` is `Missing`, returns `missing`.
 """
 function parse_dms(input)
     input = strip(input)
@@ -44,6 +48,8 @@ function parse_dms(input)
     return sgn*deg, sgn*min, sgn*sec
 end
 
+parse_dms(::Missing) = missing
+
 # helper functions for parsing
 _num_parse(m) = isnothing(m) ? 0.0 : parse(Float64, m.captures[1])
 _sgn_parse(m) = (!isnothing(m) && (m.captures[1] == "-")) ? -1 : 1
@@ -52,11 +58,16 @@ _dir_parse(m) = (!isnothing(m) && (m.captures[1] ∈ ("S", "W"))) ? -1 : 1
 """
     parse_hms(input)
 
-Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seconds)`. The following delimiters will all work and can be mixed together (the last delimiter is optional):
+Parses a string input in "ha:min:sec" format to the tuple `(hours, minutes, seconds)`.
+The following delimiters will all work and can be mixed together (the last delimiter
+is optional):
 ```
 "[+-]xx[h ]xx['′m: ]xx[\\\"″s][EW]"
 ```
-if the direction is provided, "S" and "E" are considered negative (and "-1:0:0W" is 1 degree East)
+if the direction is provided, "S" and "E" are considered negative (and "-1:0:0W"
+is 1 degree East)
+
+If `input` is `Missing`, returns `missing`.
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
@@ -78,14 +89,18 @@ function parse_hms(input)
     return ha, min, sec
 end
 
+parse_hms(::Missing) = missing
+
 """
     @dms_str
 
-Parse a string in "deg:arcmin:arcsec" format directly to an angle. By default, it will be parsed as radians, but the angle can be chosen by adding a flag to the end of the string
+Parse a string in `"deg:arcmin:arcsec"` format directly to an angle. By default,
+it will be parsed as radians, but the angle can be chosen by adding a flag to
+the end of the string
 
-* dms"..."rad -> radians (default)
-* dms"..."deg -> degrees
-* dms"..."ha -> hour angles
+* `dms"..."rad` -> radians (default)
+* `dms"..."deg` -> degrees
+* `dms"..."ha` -> hour angles
 
 # Examples
 ```jldoctest
@@ -121,11 +136,13 @@ end
 """
     @hms_str
 
-Parse a string in "ha:min:sec" format directly to an angle. By default, it will be parsed as radians, but the angle can be chosen by adding a flag to the end of the string
+Parse a string in `"ha:min:sec"` format directly to an angle. By default, it will
+be parsed as radians, but the angle can be chosen by adding a flag to the end of
+the string
 
-* hms"..."rad -> radians (default)
-* hms"..."deg -> degrees
-* hms"..."ha -> hour angles
+* `hms"..."rad` -> radians (default)
+* `hms"..."deg` -> degrees
+* `hms"..."ha` -> hour angles
 
 # Examples
 ```jldoctest
