@@ -3,6 +3,8 @@
 
     str = format_angle(deg2dms(angle))
     @test str == "45:00:00.00"
+    # three-argument form: parts passed positionally rather than as a tuple
+    @test format_angle(45, 0, 0.0) == format_angle(deg2dms(angle))
     strd = format_angle(deg2hms(angle), delim=["d", "m", "s"]; pad=true)
     @test strd == "03d00m00.00s"
     @test_throws ArgumentError format_angle(deg2dms(angle), delim=(':', ' '))
@@ -68,9 +70,15 @@ end
     # Test with missing value
     @test ismissing(format_angle(missing))
 
-    # Test with missing value and delimiter
+    # Test with missing value and keyword delimiter
     @test ismissing(format_angle(missing, delim=":"))
     @test ismissing(format_angle(missing, delim=[" ", ":", ""]))
+
+    # Test with missing value and positional delimiter (single and 3-part)
+    @test ismissing(format_angle(missing, ':'))
+    @test ismissing(format_angle(missing, ":"))
+    @test ismissing(format_angle(missing, [" ", ":", ""]))
+    @test ismissing(format_angle(missing, ("h", "m", "s")))
 
     # Test with tuple form
     @test ismissing(format_angle(missing, missing, missing))
