@@ -151,7 +151,7 @@ the above functions can take a string as input and will automatically parse it (
 
 ### Formatting angles
 
-Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Formatting.jl](https://github.com/JuliaIO/Formatting.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
+Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Format.jl](https://github.com/JuliaString/Format.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
 
 ```julia-repl
 julia> format_angle(deg2dms(45.0))
