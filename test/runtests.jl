@@ -1,22 +1,23 @@
+using ParallelTestRunner: runtests, find_tests, parse_args
 using AstroAngles
-using Format
-using StableRNGs
-using Test
-using Documenter
 
-rng = StableRNG(206265)
+const init_code = quote
+    using AstroAngles
+    using Format
+    using StableRNGs
+    using Test
+    using Documenter
 
-randdegree(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 720
-randrad(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 4π
-randha(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 48
-randdms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2dms
-randhms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2hms
+    rng = StableRNG(206265)
 
-@testset "AstroAngles" begin
-    DocMeta.setdocmeta!(AstroAngles, :DocTestSetup, :(using AstroAngles))
-    doctest(AstroAngles)
-
-    @testset "conversions" begin include("conversions.jl") end
-    @testset "parsing" begin include("parsing.jl") end
-    @testset "printing" begin include("printing.jl") end
+    randdegree(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 720
+    randrad(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 4π
+    randha(rng, Ns...) = (rand(rng, Ns...) .- 0.5) .* 48
+    randdms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2dms
+    randhms(rng, Ns...) = randdegree(rng, Ns...) .|> deg2hms
 end
+
+args = parse_args(Base.ARGS)
+testsuite = find_tests(@__DIR__)
+
+runtests(AstroAngles, args; testsuite, init_code)
