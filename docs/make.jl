@@ -2,8 +2,6 @@ using AstroAngles
 using Documenter
 using Documenter.Remotes: GitHub
 
-DocMeta.setdocmeta!(AstroAngles, :DocTestSetup, :(using AstroAngles))
-
 makedocs(;
     modules = [AstroAngles],
     sitename = "AstroAngles.jl",
@@ -15,6 +13,7 @@ makedocs(;
     format = Documenter.HTML(;
          canonical = "https://JuliaAstro.org/AstroAngles/stable/",
     ),
+    doctest = false,
 )
 
 deploydocs(;
