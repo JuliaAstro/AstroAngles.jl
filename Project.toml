@@ -3,5 +3,8 @@ uuid = "5c4adb95-c1fc-4c53-b4ea-2a94080c53d2"
 authors = ["Miles Lucas <mdlucas@hawaii.edu> and contributors"]
 version = "0.2.1"
 
+[workspace]
+projects = ["test", "docs"]
+
 [compat]
-julia = "1.6"
+julia = "1.10"
