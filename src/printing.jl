@@ -63,6 +63,10 @@ format_angle(angle, delim::Union{<:AbstractString, Char}; kwargs...) = format_an
 format_angle(w, m, s; kwargs...) = format_angle((w, m, s); kwargs...)
 format_angle(::Missing; kwargs...) = missing
 format_angle(::Missing, args...; kwargs...) = missing
+# Disambiguate a `missing` angle against the typed `delim` methods above so
+# `format_angle(missing, delim)` is not an ambiguous call (see Aqua tests).
+format_angle(::Missing, ::Union{<:AbstractString, Char}; kwargs...) = missing
+format_angle(::Missing, ::Union{<:AbstractVector, <:Tuple}; kwargs...) = missing
 
 function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String}=2, pad::Bool=true, alwayssign::Bool=false)
     whole, min, sec, delim = angle..., delim
