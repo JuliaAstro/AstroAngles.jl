@@ -64,20 +64,6 @@ end
         return t1 && t2 && t3
     end
 end
-# test-macro-throws
-# https://discourse.julialang.org/t/exceptions-in-macros-in-julia-0-7-1-0/14145/2
-macro tmt(typ,expr)
-    quote
-       @test_throws $typ begin
-          try
-             $expr
-          catch e
-             rethrow(e.error)
-          end
-       end
-    end
- end
-
 @testset "macros" begin
     str = "12:37:34.2344"
     dms = parse_dms(str)
@@ -85,14 +71,14 @@ macro tmt(typ,expr)
     @test dms"12:37:34.2344" == dms"12:37:34.2344"rad ≈ dms2rad(dms)
     @test dms"12:37:34.2344"deg ≈ dms2deg(dms)
     @test dms"12:37:34.2344"ha ≈ dms2ha(dms)
-    @tmt ErrorException @dms_str("12:37:34.2344", "invalid")
+    @test_throws ArgumentError @dms_str("12:37:34.2344", "invalid")
 
     hms = parse_hms(str)
     @test all(hms .== [12, 37, 34.2344])
     @test hms"12:37:34.2344" == hms"12:37:34.2344"rad ≈ hms2rad(hms)
     @test hms"12:37:34.2344"deg ≈ hms2deg(hms)
     @test hms"12:37:34.2344"ha ≈ hms2ha(hms)
-    @tmt ErrorException @hms_str("12:37:34.2344", "invalid")
+    @test_throws ArgumentError @hms_str("12:37:34.2344", "invalid")
 end
 
 @testset "negatives" begin
