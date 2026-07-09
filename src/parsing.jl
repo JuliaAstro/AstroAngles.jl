@@ -45,7 +45,7 @@ function parse_dms(input)
     min = _num_parse(m_min)
     sec = _num_parse(m_sec)
     sgn = _dir_parse(m_dir) * _sgn_parse(m_sgn)
-    return sgn*deg, sgn*min, sgn*sec
+    return sgn*deg, min, sec
 end
 
 parse_dms(::Missing) = missing
