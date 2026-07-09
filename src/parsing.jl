@@ -1,14 +1,14 @@
-num = raw"\d+\.?\d*" # x.xx decimal number
-first = "([+-]?\\s?$num)" # leading digit is required, can have +- with 1 space
-deg_delims = "[°d:\\s]" # only for dms
-ha_delims = "[h:\\s]" # only for hms
-min_delims = "['m:′\\s]" # shared
-sec_delims = "[\"″s\\s]" # shared
-dirs = "(N|E|S|W)" # positive first
+const num = raw"\d+\.?\d*" # x.xx decimal number
+const first = "([+-]?\\s?$num)" # leading digit is required, can have +- with 1 space
+const deg_delims = raw"[°d:\s]" # only for dms
+const ha_delims = raw"[h:\s]" # only for hms
+const min_delims = raw"['m:′\s]" # shared
+const sec_delims = raw"[\"″s\s]" # shared
+const dirs = "(N|E|S|W)" # positive first
 # the trailing ()? groups are optional, so only leading digit is required
 const ha_re =  Regex("($num)$ha_delims")
-const deg_re = Regex("($num)$deg_delims")
-const min_re = Regex("($num)$min_delims")
+const deg_re = Regex("($num)$deg_delims?")
+const min_re = Regex("($num)$min_delims?")
 const sec_re = Regex("($num)$sec_delims?")
 const dir_re = Regex("$dirs")
 const sgn_re = Regex("([+-])")
