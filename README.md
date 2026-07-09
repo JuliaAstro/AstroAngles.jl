@@ -6,6 +6,7 @@
 [![Coverage](https://codecov.io/gh/JuliaAstro/AstroAngles.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/JuliaAstro/AstroAngles.jl)
 [![Build Status](https://github.com/JuliaAstro/AstroAngles.jl/workflows/CI/badge.svg)](https://github.com/JuliaAstro/AstroAngles.jl/actions)
 [![PkgEval](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/A/AstroAngles.svg)](https://juliaci.github.io/NanosoldierReports/pkgeval_badges/report.html)
+[![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Lightweight string parsing and representation of angles.
@@ -155,10 +156,10 @@ Lastly, we have some simple methods for formatting angles into strings, although
 
 ```julia-repl
 julia> format_angle(deg2dms(45.0))
-"45:0:0.0"
+"45:00:00.00"
 
 julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
-"-4h19m60.0s"
+"-04h19m60.00s"
 ```
 
 ### Handling Missing Values
@@ -196,7 +197,7 @@ julia> format_angle(missing)
 missing
 
 julia> format_angle(deg2dms(45.0)), format_angle(missing)
-("45:0:0.0", missing)
+("45:00:00.00", missing)
 ```
 
 This feature ensures type stability when working with data that may contain missing values, which is particularly useful in data analysis workflows involving astronomical data where some measurements might be unavailable.
