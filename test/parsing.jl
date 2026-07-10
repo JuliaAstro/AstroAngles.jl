@@ -1,20 +1,24 @@
-DMS_FSTRINGS = FormatExpr.([
-    "{1:d} {2:d} {3}",
-    "{1:d}:{2:d}:{3}",
-    "{1:d}d{2:d}m{3}s",
-    "{1:d}°{2:d}'{3}\"",
-    "{1:d}°{2:d}′{3}″",
-    "{1:d} {2:d}:{3}"
-])
+DMS_FSTRINGS = FormatExpr.(
+    [
+        "{1:d} {2:d} {3}",
+        "{1:d}:{2:d}:{3}",
+        "{1:d}d{2:d}m{3}s",
+        "{1:d}°{2:d}'{3}\"",
+        "{1:d}°{2:d}′{3}″",
+        "{1:d} {2:d}:{3}",
+    ]
+)
 
-HMS_FSTRINGS = FormatExpr.([
-    "{1:d} {2:d} {3}",
-    "{1:d}:{2:d}:{3}",
-    "{1:d}h{2:d}m{3}s",
-    "{1:d}h{2:d}'{3}\"",
-    "{1:d}h{2:d}′{3}″",
-    "{1:d} {2:d}:{3}"
-])
+HMS_FSTRINGS = FormatExpr.(
+    [
+        "{1:d} {2:d} {3}",
+        "{1:d}:{2:d}:{3}",
+        "{1:d}h{2:d}m{3}s",
+        "{1:d}h{2:d}'{3}\"",
+        "{1:d}h{2:d}′{3}″",
+        "{1:d} {2:d}:{3}",
+    ]
+)
 
 @testset "parsing" for fstring in DMS_FSTRINGS
     @test all(randdms(rng, 1000)) do dms
@@ -149,7 +153,11 @@ end
     @test_throws ArgumentError parse_dms("1s2d")
     @test_throws ArgumentError parse_dms("1'2d")
     @test_throws ArgumentError parse_hms("3s2m")
-    err = try parse_dms("3s2m") catch e; e end
+    err = try
+        parse_dms("3s2m")
+    catch e
+        e
+    end
     @test err isa ArgumentError
     @test occursin("out of order", err.msg)
     # Unparseable / leading-delimiter / trailing-junk input is rejected

@@ -5,32 +5,36 @@
     @test str == "45:00:00.00"
     # three-argument form: parts passed positionally rather than as a tuple
     @test format_angle(45, 0, 0.0) == format_angle(deg2dms(angle))
-    strd = format_angle(deg2hms(angle), delim=["d", "m", "s"]; pad=true)
+    strd = format_angle(deg2hms(angle), delim = ["d", "m", "s"]; pad = true)
     @test strd == "03d00m00.00s"
-    @test_throws ArgumentError format_angle(deg2dms(angle), delim=(':', ' '))
-    @test_throws ArgumentError format_angle(deg2dms(angle), delim=(':', ' ', 'x', 'y'))
-    err = try format_angle(deg2dms(angle), delim=(':', ' ')) catch e; e end
+    @test_throws ArgumentError format_angle(deg2dms(angle), delim = (':', ' '))
+    @test_throws ArgumentError format_angle(deg2dms(angle), delim = (':', ' ', 'x', 'y'))
+    err = try
+        format_angle(deg2dms(angle), delim = (':', ' '))
+    catch e
+        e
+    end
     @test occursin("1 or 3", err.msg)
 end
 
 function test_print_integration(angles, f1, f2)
     @test all(angles) do angle
         parts = f1(angle)
-        str = format_angle(parts, digits="all")
+        str = format_angle(parts, digits = "all")
         res = f2(str)
         return all(res .≈ parts)
     end
 
     @test all(angles) do angle
         parts = f1(angle)
-        str = format_angle(parts, delim=" ", digits="all")
+        str = format_angle(parts, delim = " ", digits = "all")
         res = f2(str)
         return all(res .≈ parts)
     end
 
-    @test all(angles) do angle
+    return @test all(angles) do angle
         parts = f1(angle)
-        str = format_angle(parts, delim=(":", "m", ""), digits="all")
+        str = format_angle(parts, delim = (":", "m", ""), digits = "all")
         res = f2(str)
         return all(res .≈ parts)
     end
@@ -55,15 +59,15 @@ end
     @test format_angle(deg2dms(-45.0)) == "-45:00:00.00"
     @test format_angle(deg2hms(-65.0)) == "-04:19:60.00"
     # real negatives with multi-delim
-    @test format_angle(deg2hms(-65.0), delim=["h", "m", "s"]) == "-04h19m60.00s"
+    @test format_angle(deg2hms(-65.0), delim = ["h", "m", "s"]) == "-04h19m60.00s"
     # negative without pad — no double minus
-    @test format_angle(deg2dms(-45.0); pad=false) == "-45:0:0.0"
+    @test format_angle(deg2dms(-45.0); pad = false) == "-45:0:0.0"
     # negative near zero with pad -- sign on zero-padded degrees
-    @test format_angle(deg2dms(-0.5); pad=true) == "-00:30:00.00"
+    @test format_angle(deg2dms(-0.5); pad = true) == "-00:30:00.00"
     # alwayssign
-    @test format_angle(deg2dms(45.0); alwayssign=true) == "+45:00:00.00"
-    @test format_angle(deg2dms(-45.0); alwayssign=true) == "-45:00:00.00"
-    @test format_angle(deg2dms(0.5); alwayssign=true, pad=true) == "+00:30:00.00"
+    @test format_angle(deg2dms(45.0); alwayssign = true) == "+45:00:00.00"
+    @test format_angle(deg2dms(-45.0); alwayssign = true) == "-45:00:00.00"
+    @test format_angle(deg2dms(0.5); alwayssign = true, pad = true) == "+00:30:00.00"
 end
 
 @testset "missing value handling in printing" begin
@@ -71,8 +75,8 @@ end
     @test ismissing(format_angle(missing))
 
     # Test with missing value and keyword delimiter
-    @test ismissing(format_angle(missing, delim=":"))
-    @test ismissing(format_angle(missing, delim=[" ", ":", ""]))
+    @test ismissing(format_angle(missing, delim = ":"))
+    @test ismissing(format_angle(missing, delim = [" ", ":", ""]))
 
     # Test with missing value and positional delimiter (single and 3-part)
     @test ismissing(format_angle(missing, ':'))

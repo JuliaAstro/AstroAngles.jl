@@ -35,14 +35,19 @@ end
 function _assemble(captures, whole_units, input, kind, order)
     parts = [0.0, 0.0, 0.0]
     next = 1 # Lowest component index the next value may occupy
-    for (value, delim) in ((captures[2], captures[3]),
-                           (captures[4], captures[5]),
-                           (captures[6], captures[7]))
+    for (value, delim) in (
+            (captures[2], captures[3]),
+            (captures[4], captures[5]),
+            (captures[6], captures[7]),
+        )
         value === nothing && continue
         idx = something(_slot(delim, whole_units), next)
-        idx < next && throw(ArgumentError(
-            "could not parse \"$input\" as $kind: components are out of order " *
-            "(expected $order)"))
+        idx < next && throw(
+            ArgumentError(
+                "could not parse \"$input\" as $kind: components are out of order " *
+                    "(expected $order)"
+            )
+        )
         parts[idx] = parse(Float64, value)
         next = idx + 1
     end
@@ -89,10 +94,15 @@ julia> parse_dms("2m3s")
 """
 function parse_dms(input)
     m = match(dms_re, strip(input))
-    m === nothing && throw(ArgumentError(
-        "could not parse \"$input\" as a sexagesimal (deg, arcmin, arcsec) angle"))
-    return _assemble(m.captures, ('°', 'd'), input,
-        "a sexagesimal (deg, arcmin, arcsec) angle", "degrees, then arcminutes, then arcseconds")
+    m === nothing && throw(
+        ArgumentError(
+            "could not parse \"$input\" as a sexagesimal (deg, arcmin, arcsec) angle"
+        )
+    )
+    return _assemble(
+        m.captures, ('°', 'd'), input,
+        "a sexagesimal (deg, arcmin, arcsec) angle", "degrees, then arcminutes, then arcseconds"
+    )
 end
 
 parse_dms(::Missing) = missing
@@ -119,10 +129,15 @@ If `input` is `Missing`, returns `missing`.
 """
 function parse_hms(input)
     m = match(hms_re, strip(input))
-    m === nothing && throw(ArgumentError(
-        "could not parse \"$input\" as an hour-angle (hour, min, sec) value"))
-    return _assemble(m.captures, ('h',), input,
-        "an hour-angle (hour, min, sec) value", "hours, then minutes, then seconds")
+    m === nothing && throw(
+        ArgumentError(
+            "could not parse \"$input\" as an hour-angle (hour, min, sec) value"
+        )
+    )
+    return _assemble(
+        m.captures, ('h',), input,
+        "an hour-angle (hour, min, sec) value", "hours, then minutes, then seconds"
+    )
 end
 
 parse_hms(::Missing) = missing
@@ -156,7 +171,7 @@ julia> dms"12:17:25.3"ha
 # See also
 [`parse_dms`](@ref)
 """
-macro dms_str(input, flag="rad")
+macro dms_str(input, flag = "rad")
     if flag === "rad"
         return dms2rad(input)
     elseif flag === "deg"
@@ -198,7 +213,7 @@ julia> hms"12:17:25.3"ha
 # See also
 [`parse_hms`](@ref)
 """
-macro hms_str(input, flag="rad")
+macro hms_str(input, flag = "rad")
     if flag === "rad"
         return hms2rad(input)
     elseif flag === "deg"
