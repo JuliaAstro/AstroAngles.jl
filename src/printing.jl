@@ -58,7 +58,7 @@ julia> format_angle(deg2dms(-45.0); alwayssign=true)
 # See also
 [`deg2dms`](@ref), [`deg2hms`](@ref), [`rad2dms`](@ref), [`rad2hms`](@ref), [`ha2dms`](@ref), [`ha2hms`](@ref)
 """
-format_angle(angle; delim=':', kwargs...) = format_angle(angle, delim; kwargs...)
+format_angle(angle; delim = ':', kwargs...) = format_angle(angle, delim; kwargs...)
 format_angle(angle, delim::Union{<:AbstractString, Char}; kwargs...) = format_angle(angle, [delim]; kwargs...)
 format_angle(w, m, s; kwargs...) = format_angle((w, m, s); kwargs...)
 format_angle(::Missing; kwargs...) = missing
@@ -68,18 +68,21 @@ format_angle(::Missing, args...; kwargs...) = missing
 format_angle(::Missing, ::Union{<:AbstractString, Char}; kwargs...) = missing
 format_angle(::Missing, ::Union{<:AbstractVector, <:Tuple}; kwargs...) = missing
 
-function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String}=2, pad::Bool=true, alwayssign::Bool=false)
+function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String} = 2, pad::Bool = true, alwayssign::Bool = false)
     whole, min, sec, delim = angle..., delim
-    length(delim) in (1, 3) || throw(ArgumentError(
-        "delimiter must have 1 or 3 elements, got $(length(delim))"))
+    length(delim) in (1, 3) || throw(
+        ArgumentError(
+            "delimiter must have 1 or 3 elements, got $(length(delim))"
+        )
+    )
     sgn = signbit(whole) ? '-' : (alwayssign ? '+' : "")
 
     whole, min = trunc.(Int, (whole, min))
     whole = abs(whole)  # sign handled separately via sgn
     sec = digits == "all" ? sec : round(sec; digits)
     if pad
-      whole, min = lpad.((whole, min), 2, "0")
-      sec = join(lpad.(split("$sec", "."), 2, "0"), ".")
+        whole, min = lpad.((whole, min), 2, "0")
+        sec = join(lpad.(split("$sec", "."), 2, "0"), ".")
     end
 
     angle = string.((whole, min, sec))

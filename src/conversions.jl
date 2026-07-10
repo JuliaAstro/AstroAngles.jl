@@ -118,9 +118,11 @@ If `angle` is `Missing`, returns `missing`.
 """
 ha2dms(angle) = ha2deg(angle) |> deg2dms
 
-for func in (:rad2ha, :rad2dms, :rad2hms,
-             :deg2ha, :deg2dms, :deg2hms,
-             :ha2rad, :ha2deg, :ha2hms, :ha2dms)
+for func in (
+        :rad2ha, :rad2dms, :rad2hms,
+        :deg2ha, :deg2dms, :deg2hms,
+        :ha2rad, :ha2deg, :ha2hms, :ha2dms,
+    )
     @eval $func(::Missing) = missing
 end
 

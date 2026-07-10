@@ -1,20 +1,24 @@
-DMS_FSTRINGS = FormatExpr.([
-    "{1:d} {2:d} {3}",
-    "{1:d}:{2:d}:{3}",
-    "{1:d}d{2:d}m{3}s",
-    "{1:d}°{2:d}'{3}\"",
-    "{1:d}°{2:d}′{3}″",
-    "{1:d} {2:d}:{3}"
-])
+DMS_FSTRINGS = FormatExpr.(
+    [
+        "{1:d} {2:d} {3}",
+        "{1:d}:{2:d}:{3}",
+        "{1:d}d{2:d}m{3}s",
+        "{1:d}°{2:d}'{3}\"",
+        "{1:d}°{2:d}′{3}″",
+        "{1:d} {2:d}:{3}",
+    ]
+)
 
-HMS_FSTRINGS = FormatExpr.([
-    "{1:d} {2:d} {3}",
-    "{1:d}:{2:d}:{3}",
-    "{1:d}h{2:d}m{3}s",
-    "{1:d}h{2:d}'{3}\"",
-    "{1:d}h{2:d}′{3}″",
-    "{1:d} {2:d}:{3}"
-])
+HMS_FSTRINGS = FormatExpr.(
+    [
+        "{1:d} {2:d} {3}",
+        "{1:d}:{2:d}:{3}",
+        "{1:d}h{2:d}m{3}s",
+        "{1:d}h{2:d}'{3}\"",
+        "{1:d}h{2:d}′{3}″",
+        "{1:d} {2:d}:{3}",
+    ]
+)
 
 @testset "parsing" for fstring in DMS_FSTRINGS
     @test all(randdms(rng, 1000)) do dms
@@ -61,6 +65,7 @@ end
         return t1 && t2 && t3
     end
 end
+
 @testset "macros" begin
     str = "12:37:34.2344"
     dms = parse_dms(str)
@@ -120,6 +125,47 @@ end
     @test parse_hms("10.234") == (10.234, 0.0, 0.0)
     @test parse_hms("10.234 0.1") == (10.234, 0.1, 0.0)
     @test parse_hms("10.234 0.1 0.3") == (10.234, 0.1, 0.3)
+end
+
+@testset "unit-tagged components" begin
+    # A value's unit routes it to the right component instead of positionally
+    @test parse_dms("1'") == (0.0, 1.0, 0.0)
+    @test parse_dms("1\"") == (0.0, 0.0, 1.0)
+    @test parse_dms("2m3s") == (0.0, 2.0, 3.0)
+    @test parse_dms("1'2\"") == (0.0, 1.0, 2.0)
+    @test parse_dms("30'30\"") == (0.0, 30.0, 30.0)
+    @test parse_dms("1d3s") == (1.0, 0.0, 3.0) # Skip the (absent) arcminutes
+    @test parse_dms("10.2345d") == (10.2345, 0.0, 0.0)
+    @test parse_hms("2m3s") == (0.0, 2.0, 3.0)
+    @test parse_hms("1h3s") == (1.0, 0.0, 3.0)
+    # Sign lives on the whole component even when it is absent
+    @test parse_dms("2m3sW") == (-0.0, 2.0, 3.0)
+    @test parse_hms("-2m3s") == (-0.0, 2.0, 3.0)
+    # Ambiguous delimiters (`:`, whitespace) still fill positionally
+    @test parse_dms("1:2") == (1.0, 2.0, 0.0)
+    @test parse_dms("1 2m") == (1.0, 2.0, 0.0)
+    @test parse_dms("1m2") == (0.0, 1.0, 2.0)  # Positional after arcmin --> arcsec
+end
+
+@testset "out-of-order and malformed input" begin
+    # Components out of order --> informative ArgumentError
+    @test_throws ArgumentError parse_dms("3s2m")
+    @test_throws ArgumentError parse_dms("1s2d")
+    @test_throws ArgumentError parse_dms("1'2d")
+    @test_throws ArgumentError parse_hms("3s2m")
+    err = try
+        parse_dms("3s2m")
+    catch e
+        e
+    end
+    @test err isa ArgumentError
+    @test occursin("out of order", err.msg)
+    # Unparseable / leading-delimiter / trailing-junk input is rejected
+    @test_throws ArgumentError parse_dms(":5")
+    @test_throws ArgumentError parse_dms("1:2:3junk")
+    @test_throws ArgumentError parse_dms("abc")
+    @test_throws ArgumentError parse_dms("1:2:3:4")
+    @test_throws ArgumentError parse_hms(":5")
 end
 
 @testset "missing value handling in parsing" begin
