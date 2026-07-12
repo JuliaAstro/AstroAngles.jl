@@ -82,7 +82,13 @@ function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Un
     sec = digits == "all" ? sec : round(sec; digits)
     if pad
         whole, min = lpad.((whole, min), 2, "0")
-        sec = join(lpad.(split("$sec", "."), 2, "0"), ".")
+        intfrac = split(string(sec), '.')
+        sec = lpad(intfrac[1], 2, "0")
+        if length(intfrac) == 2
+            # Fractional digits are padded on the right, e.g. 30.5 -> "30.50"
+            frac = digits isa Int ? rpad(intfrac[2], digits, "0") : intfrac[2]
+            sec = sec * "." * frac
+        end
     end
 
     angle = string.((whole, min, sec))

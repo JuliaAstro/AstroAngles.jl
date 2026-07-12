@@ -90,3 +90,12 @@ end
     # Test with partially missing values
     @test ismissing(format_angle(missing, 2.39, "15"))
 end
+
+@testset "fractional digit padding" begin
+    # Fractional digits are padded on the right: 30.5 is 30.50, not 30.05
+    @test format_angle((10, 20, 30.5)) == "10:20:30.50"
+    @test format_angle((10, 20, 30.05)) == "10:20:30.05"
+    @test format_angle((10, 20, 30.5); digits = 4) == "10:20:30.5000"
+    # Unpadded values keep their natural representation
+    @test format_angle((10, 20, 30.5); pad = false) == "10:20:30.5"
+end
