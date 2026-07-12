@@ -74,7 +74,6 @@ julia> format_angle((58, 48, 12.0), delim=["°", "′", "″"]; digits=0)
 [`deg2dms`](@ref), [`deg2hms`](@ref), [`rad2dms`](@ref), [`rad2hms`](@ref), [`ha2dms`](@ref), [`ha2hms`](@ref)
 """
 format_angle(angle; delim = ':', kwargs...) = format_angle(angle, delim; kwargs...)
-format_angle(angle, delim::Union{<:AbstractString, Char}; kwargs...) = format_angle(angle, [delim]; kwargs...)
 format_angle(part1::Real, rest::Vararg{Union{Real, Missing}}; kwargs...) = format_angle((part1, rest...); kwargs...)
 format_angle(::Missing; kwargs...) = missing
 format_angle(::Missing, args...; kwargs...) = missing
@@ -83,16 +82,33 @@ format_angle(::Missing, args...; kwargs...) = missing
 format_angle(::Missing, ::Union{<:AbstractString, Char}; kwargs...) = missing
 format_angle(::Missing, ::Union{<:AbstractVector, <:Tuple}; kwargs...) = missing
 
-function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String} = 2, pad::Bool = true, alwayssign::Bool = false)
+# A scalar delimiter is inserted between the parts.
+function format_angle(angle, delim::Union{<:AbstractString, Char}; kwargs...)
+    formatted = _format_angle_parts(angle; kwargs...)
+    formatted === missing && return missing
+    sgn, strs = formatted
+    return string(sgn, join(strs, delim))
+end
+
+# A collection of delimiters is appended after each respective part, and must
+# therefore contain exactly one delimiter per part.
+function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; kwargs...)
+    formatted = _format_angle_parts(angle; kwargs...)
+    formatted === missing && return missing
+    sgn, strs = formatted
+    length(delim) == length(strs) || throw(
+        ArgumentError(
+            "delimiter collection must have one delimiter per angle part ($(length(strs))), got $(length(delim))"
+        )
+    )
+    return string(sgn, join(string.(strs, delim)))
+end
+
+function _format_angle_parts(angle; digits::Union{Int, String} = 2, pad::Bool = true, alwayssign::Bool = false)
     parts = Tuple(angle)
     n = length(parts)
     n >= 1 || throw(ArgumentError("angle must have at least one part"))
     any(ismissing, parts) && return missing
-    length(delim) in (1, n) || throw(
-        ArgumentError(
-            "delimiter must have 1 or $n elements (one per angle part), got $(length(delim))"
-        )
-    )
 
     sgn = signbit(first(parts)) ? '-' : (alwayssign ? '+' : "")
 
@@ -117,10 +133,5 @@ function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Un
     end
     strs[n] = str
 
-    printout = if length(delim) == 1
-        join(strs, delim[begin])
-    else
-        join(string.(strs, delim))
-    end
-    return string(sgn, printout)
+    return sgn, strs
 end

@@ -14,7 +14,7 @@
     catch e
         e
     end
-    @test occursin("1 or 3", err.msg)
+    @test occursin("one delimiter per angle part (3), got 2", err.msg)
 end
 
 function test_print_integration(angles, f1, f2)
@@ -117,6 +117,9 @@ end
     # Single part
     @test format_angle((45.671,)) == "45.67"
     @test format_angle(-45.671) == "-45.67"
+    # A single-element delimiter collection is still appended (not treated as
+    # a between-parts separator, which would drop it)
+    @test format_angle((33.6,), delim = ["ˢ"]) == "33.60ˢ"
 
     # digits=0 displays the last part as a whole number
     @test format_angle((58, 48, 12.0), delim = ["°", "′", "″"], digits = 0) == "58°48′12″"
@@ -125,12 +128,12 @@ end
     @test format_angle((-45, 30, 10, 5, 2.0), delim = ["°", "'", "\"", "mas", "μas"]) ==
         "-45°30'10\"05mas02.00μas"
 
-    # Delimiter count must be 1 or match the number of parts
+    # Delimiter collections must have one delimiter per part
     @test_throws ArgumentError format_angle((1, 2, 3, 4.0), delim = ["a", "b", "c"])
     err = try
         format_angle((1, 2, 3, 4.0), delim = ["a", "b", "c"])
     catch e
         e
     end
-    @test occursin("1 or 4", err.msg)
+    @test occursin("one delimiter per angle part (4), got 3", err.msg)
 end
