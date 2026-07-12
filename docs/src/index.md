@@ -155,7 +155,7 @@ the above functions can take a string as input and will automatically parse it (
 
 ### Formatting angles
 
-Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Format.jl](https://github.com/JuliaString/Format.jl). `format_angle` takes parts (like from `deg2dms` or `rad2hms`) and a delimiter (or collection of 3 delimiters for each value).
+Lastly, we have some simple methods for formatting angles into strings, although for more fine-tuned control we recommend using [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like [Format.jl](https://github.com/JuliaString/Format.jl). `format_angle` takes the parts of an angle (like from `deg2dms` or `rad2hms`) and a delimiter: either a single delimiter inserted between the parts, or a collection with one delimiter per part, appended after each.
 
 ```jldoctest
 julia> format_angle(deg2dms(45.0))
@@ -163,6 +163,16 @@ julia> format_angle(deg2dms(45.0))
 
 julia> format_angle(deg2hms(-65.0); delim=["h", "m", "s"])
 "-04h19m60.00s"
+```
+
+Any number of parts is supported: every part except the last is formatted as a whole number, and the last part keeps its fractional digits, controlled by the `digits` keyword (`digits=0` displays it as a whole number too). This allows partial splits like `(minutes, seconds)` as well as extended sub-arcsecond splits like `(degrees, arcminutes, arcseconds, mas, μas)`.
+
+```jldoctest
+julia> format_angle((58, 48, 12.0); delim=["°", "′", "″"], digits=0)
+"58°48′12″"
+
+julia> format_angle((23, 33.6); delim=["ᵐ", "ˢ"]) # partial (minutes, seconds) split
+"23ᵐ33.60ˢ"
 ```
 
 ### Example: reading coordinates from a table
@@ -232,6 +242,9 @@ missing
 
 julia> format_angle(deg2dms(45.0)), format_angle(missing)
 ("45:00:00.00", missing)
+
+julia> format_angle(45, missing, 3.0) # a missing part in any position
+missing
 ```
 
 This feature ensures type stability when working with data that may contain missing values, which is particularly useful in data analysis workflows involving astronomical data where some measurements might be unavailable.
