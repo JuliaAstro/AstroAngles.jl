@@ -89,6 +89,11 @@ end
 
     # Test with partially missing values
     @test ismissing(format_angle(missing, 2.39, "15"))
+
+    # A missing part anywhere returns missing (not just in first position)
+    @test ismissing(format_angle(2.39, missing, 15))
+    @test ismissing(format_angle((1, missing, 3.0)))
+    @test ismissing(format_angle((1, 2, missing), delim = ["h", "m", "s"]))
 end
 
 @testset "fractional digit padding" begin
@@ -98,4 +103,34 @@ end
     @test format_angle((10, 20, 30.5); digits = 4) == "10:20:30.5000"
     # Unpadded values keep their natural representation
     @test format_angle((10, 20, 30.5); pad = false) == "10:20:30.5"
+end
+
+@testset "variable-length parts" begin
+    # Partial splits, e.g. (minutes, seconds)
+    @test format_angle((23, 33.6), delim = ["ᵐ", "ˢ"]) == "23ᵐ33.60ˢ"
+    @test format_angle(23, 33.6) == "23:33.60"
+
+    # Extended sub-arcsecond splits, e.g. (deg, arcmin, arcsec, mas, μas)
+    @test format_angle((58, 48, 12, 345, 200.0), delim = ["°", "'", "\"", "mas", "μas"]) ==
+        "58°48'12\"345mas200.00μas"
+
+    # Single part
+    @test format_angle((45.671,)) == "45.67"
+    @test format_angle(-45.671) == "-45.67"
+
+    # digits=0 displays the last part as a whole number
+    @test format_angle((58, 48, 12.0), delim = ["°", "′", "″"], digits = 0) == "58°48′12″"
+
+    # Sign is taken from the first part only
+    @test format_angle((-45, 30, 10, 5, 2.0), delim = ["°", "'", "\"", "mas", "μas"]) ==
+        "-45°30'10\"05mas02.00μas"
+
+    # Delimiter count must be 1 or match the number of parts
+    @test_throws ArgumentError format_angle((1, 2, 3, 4.0), delim = ["a", "b", "c"])
+    err = try
+        format_angle((1, 2, 3, 4.0), delim = ["a", "b", "c"])
+    catch e
+        e
+    end
+    @test occursin("1 or 4", err.msg)
 end

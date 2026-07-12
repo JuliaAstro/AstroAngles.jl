@@ -1,12 +1,20 @@
 """
     format_angle(parts; delim = ':', digits = 2, pad = true, alwayssign = false)
-    format_angle(whole, minutes, seconds; kwargs...)
+    format_angle(parts...; kwargs...)
 
-Format the `(whole, minutes, seconds)` `parts` of an angle into a delimited
-string. The parts are typically produced by the [`deg2dms`](@ref),
+Format the parts of an angle into a delimited string. The parts are typically
+the `(whole, minutes, seconds)` produced by the [`deg2dms`](@ref),
 [`deg2hms`](@ref), [`rad2dms`](@ref), [`rad2hms`](@ref), [`ha2dms`](@ref), and
-[`ha2hms`](@ref) methods, and may be passed either as a single tuple or as three
-separate positional arguments. For more control over formatting, consider using
+[`ha2hms`](@ref) methods, and may be passed either as a single tuple (or
+vector) or as separate positional arguments.
+
+Any number of parts is supported: every part except the last is formatted as a
+whole number, and the last part keeps its fractional digits. This allows
+extended sub-arcsecond splits like `(degrees, arcminutes, arcseconds, mas,
+μas)` as well as partial splits like `(minutes, seconds)`. The sign of the
+angle is taken from the first part, matching the convention of the conversion
+methods above, which carry the sign only on their first part. For more control
+over formatting, consider using
 [Printf](https://docs.julialang.org/en/v1/stdlib/Printf/) or a package like
 [Format.jl](https://github.com/JuliaString/Format.jl).
 
@@ -15,13 +23,14 @@ If any part is `missing`, returns `missing`.
 # Keyword arguments
 - `delim`: The delimiter(s) placed between the parts. A single `Char`/`String`
   (default `':'`) is inserted between each part, e.g. `"45:00:00.00"`. A vector
-  or tuple of three delimiters is instead appended after each respective part,
-  e.g., `delim = ["h", "m", "s"]` gives `"05h43m46.48s"`. Only 1 or 3 delimiters
-  are accepted.
-- `digits`: The number of digits to round the seconds to (default `2`). Pass
-  `"all"` to keep full precision without rounding.
-- `pad`: If `true` (default), zero-pad each part to at least two characters,
-  e.g. `"03:00:00.00"`.
+  or tuple with one delimiter per part is instead appended after each
+  respective part, e.g., `delim = ["h", "m", "s"]` gives `"05h43m46.48s"`.
+- `digits`: The number of digits to round the last part to (default `2`). Pass
+  `0` to display it as a whole number, or `"all"` to keep full precision
+  without rounding.
+- `pad`: If `true` (default), zero-pad the whole-number portion of each part to
+  at least two characters and the fractional digits of the last part to
+  `digits`, e.g. `"03:00:00.00"`.
 - `alwayssign`: If `true`, prefix non-negative angles with `'+'` (default
   `false`). Negative angles are always prefixed with `'-'`.
 
@@ -53,6 +62,12 @@ julia> format_angle(deg2dms(45.0); alwayssign=true)
 
 julia> format_angle(deg2dms(-45.0); alwayssign=true)
 "-45:00:00.00"
+
+julia> format_angle((23, 33.6), delim=["ᵐ", "ˢ"]) # partial split
+"23ᵐ33.60ˢ"
+
+julia> format_angle((58, 48, 12.0), delim=["°", "′", "″"]; digits=0)
+"58°48′12″"
 ```
 
 # See also
@@ -60,7 +75,7 @@ julia> format_angle(deg2dms(-45.0); alwayssign=true)
 """
 format_angle(angle; delim = ':', kwargs...) = format_angle(angle, delim; kwargs...)
 format_angle(angle, delim::Union{<:AbstractString, Char}; kwargs...) = format_angle(angle, [delim]; kwargs...)
-format_angle(w, m, s; kwargs...) = format_angle((w, m, s); kwargs...)
+format_angle(part1::Real, rest::Vararg{Union{Real, Missing}}; kwargs...) = format_angle((part1, rest...); kwargs...)
 format_angle(::Missing; kwargs...) = missing
 format_angle(::Missing, args...; kwargs...) = missing
 # Disambiguate a `missing` angle against the typed `delim` methods above so
@@ -69,33 +84,43 @@ format_angle(::Missing, ::Union{<:AbstractString, Char}; kwargs...) = missing
 format_angle(::Missing, ::Union{<:AbstractVector, <:Tuple}; kwargs...) = missing
 
 function format_angle(angle, delim::Union{<:AbstractVector, <:Tuple}; digits::Union{Int, String} = 2, pad::Bool = true, alwayssign::Bool = false)
-    whole, min, sec, delim = angle..., delim
-    length(delim) in (1, 3) || throw(
+    parts = Tuple(angle)
+    n = length(parts)
+    n >= 1 || throw(ArgumentError("angle must have at least one part"))
+    any(ismissing, parts) && return missing
+    length(delim) in (1, n) || throw(
         ArgumentError(
-            "delimiter must have 1 or 3 elements, got $(length(delim))"
+            "delimiter must have 1 or $n elements (one per angle part), got $(length(delim))"
         )
     )
-    sgn = signbit(whole) ? '-' : (alwayssign ? '+' : "")
 
-    whole, min = trunc.(Int, (whole, min))
-    whole = abs(whole)  # sign handled separately via sgn
-    sec = digits == "all" ? sec : round(sec; digits)
+    sgn = signbit(first(parts)) ? '-' : (alwayssign ? '+' : "")
+
+    strs = Vector{String}(undef, n)
+    # Every part except the last is a whole number. The sign is handled
+    # separately via `sgn`.
+    for i in 1:(n - 1)
+        v = trunc(Int, i == 1 ? abs(parts[i]) : parts[i])
+        strs[i] = pad ? lpad(v, 2, "0") : string(v)
+    end
+    val = n == 1 ? abs(parts[n]) : parts[n]
+    val = digits == "all" ? val : digits == 0 ? round(Int, val) : round(val; digits)
+    str = string(val)
     if pad
-        whole, min = lpad.((whole, min), 2, "0")
-        intfrac = split(string(sec), '.')
-        sec = lpad(intfrac[1], 2, "0")
+        intfrac = split(str, '.')
+        str = lpad(intfrac[1], 2, "0")
         if length(intfrac) == 2
             # Fractional digits are padded on the right, e.g. 30.5 -> "30.50"
             frac = digits isa Int ? rpad(intfrac[2], digits, "0") : intfrac[2]
-            sec = sec * "." * frac
+            str *= "." * frac
         end
     end
+    strs[n] = str
 
-    angle = string.((whole, min, sec))
     printout = if length(delim) == 1
-        join(angle, delim[begin])
+        join(strs, delim[begin])
     else
-        string(angle[1], delim[1], angle[2], delim[2], angle[3], delim[3])
+        join(string.(strs, delim))
     end
-    return string(sgn, printout...)
+    return string(sgn, printout)
 end
